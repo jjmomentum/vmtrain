@@ -1,0 +1,16 @@
+doctype html
+html(lang="en")
+  head
+    title= pageTitle
+    script(type='text/javascript').
+      if (foo) bar(1 + 5)
+  body
+    h1 VMware Q3 Training
+    #container.col
+      if youAreUsingPug
+        p You are amazing
+      else
+        p Get on it!
+      p.
+        This is the Q3 training sample page.
+      script(src='//localhost:35729/livereload.js')

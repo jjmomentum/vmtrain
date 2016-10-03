@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="app">
+  <head>
+    <meta charset="utf-8">
+    <title>VMware DevOps &amp; CNA Q3</title>
+    <link href="css/style.css" rel="stylesheet">
+  </head>
+  <body>
+    <header>
+      <h1>VMware DevOps &amp; CNA Q3</h1>
+      <h2 ng-show="currentUser">Hello {{currentUser.email}}</h2>
+      <nav>
+        <ul>
+          <li>
+            <a ui-sref="all-servers" ui-sref-active="active">All servers</a>
+          </li>
+          <li ng-hide="currentUser">
+            <a ui-sref="login" ui-sref-active="active">Log in</a>
+          </li>
+          <li ng-show="currentUser">
+            <a ui-sref="logout" ui-sref-active="active">Log out</a>
+          </li>
+        </ul>
+      </nav>
+    </header>
+
+    <main ui-view></main>
+
+    <script src="vendor/angular.js"></script>
+    <script src="vendor/angular-resource.js"></script>
+    <script src="vendor/angular-ui-router.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/services/lb-services.js"></script>
+    <script src="js/controllers/reservable-server.js"></script>
+    <script src="js/controllers/auth.js"></script>
+    <script src="js/services/auth.js"></script>
+  </body>
+</html>

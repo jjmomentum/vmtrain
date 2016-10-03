@@ -1,0 +1,27 @@
+{
+  "name": "updater",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "active": {
+      "type": "boolean",
+      "required": true,
+      "default": true
+    }
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [],
+  "methods": {
+    "checkForUpdates": {
+      "isStatic": true,
+      "accepts": [],
+      "returns": [],
+      "description": "Examine queue for waiting reservations and update backing store.",
+      "http": []
+    }
+  }
+}
