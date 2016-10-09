@@ -1,9 +1,9 @@
 // Copyright (c) 2015 VMware
-// Author: Tom Hite (thite@vmware.com)
+// Author: Luis M. Valerio (lvaleriocasti@vmware.com)
 //
-// License: MIT (see https://github.com/tdhite/go-reminders/LICENSE).
+// License: MIT
 //
-package journal
+package datamanager
 
 import (
 	"log"

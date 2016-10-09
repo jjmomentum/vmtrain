@@ -2,7 +2,7 @@
 
 # Start from scratch
 FROM scratch
-MAINTAINER Tom Hite <thite@vmware.com>
+MAINTAINER Luis M. Valerio <lvaleriocasti@vmware.com>
 
 # Add the microservice
 ADD q3-training-journal /q3-training-journal

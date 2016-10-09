@@ -69,7 +69,7 @@ This service requires a valid Go language environment and gnu make.
 # License and Author
 Copyright: Copyright (c) 2015 VMware, Inc. All Rights Reserved
 
-Author: Tom Hite, VMware, Inc.
+Author: Luis M. Valerio, VMware, Inc.
 
 License: MIT
 
