@@ -1,7 +1,9 @@
-// Copyright (c) 2015 VMware
+// Package models has the structs that are used by the application.
+//
+// Copyright (c) 2016 VMware
 // Author: Luis M. Valerio (lvaleriocasti@vmware.com)
 //
-// License: MIT 
+// License: MIT
 //
 
 /*

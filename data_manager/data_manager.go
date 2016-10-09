@@ -1,7 +1,7 @@
 // Copyright (c) 2015 VMware
 // Author: Luis M. Valerio (lvaleriocasti@vmware.com)
 //
-// License: MIT 
+// License: MIT
 //
 package main
 
@@ -14,9 +14,9 @@ import (
 
 	"github.com/ant0ine/go-json-rest/rest"
 	"github.com/stretchr/graceful"
-	"github.com/tdhite/q3-training-journal/app"
-	"github.com/tdhite/q3-training-journal/journal"
-	"github.com/tdhite/q3-training-journal/template"
+	"github.com/vmtrain/data_manager/app"
+	"github.com/vmtrain/data_manager/models"
+	"github.com/vmtrain/data_manager/template"
 )
 
 // Http handler functions for dealing with various site requests for
@@ -28,20 +28,20 @@ import (
 // worth writing up a whole router model just for that when we can just 'mux'
 // things via separate handlers for each html (site) request.
 func templateHomeHandler(w http.ResponseWriter, r *http.Request) {
-	app.Context.Stats.AddHit(r.RequestURI)
-	t := template.New(app.Context.ContentRoot, app.Context.APIHost+":"+strconv.Itoa(app.Context.ListenPort))
+	app.Cntxt.Stats.AddHit(r.RequestURI)
+	t := template.New(app.Cntxt.ContentRoot, app.Cntxt.APIHost+":"+strconv.Itoa(app.Cntxt.ListenPort))
 	t.IndexHandler(w, r)
 }
 
 func templateTopicHandler(w http.ResponseWriter, r *http.Request) {
-	app.Context.Stats.AddHit(r.RequestURI)
-	t := template.New(app.Context.ContentRoot, app.Context.APIHost+":"+strconv.Itoa(app.Context.ListenPort))
+	app.Cntxt.Stats.AddHit(r.RequestURI)
+	t := template.New(app.Cntxt.ContentRoot, app.Cntxt.APIHost+":"+strconv.Itoa(app.Cntxt.ListenPort))
 	t.TopicHandler(w, r)
 }
 
 func statsHitsHandler(w http.ResponseWriter, r *http.Request) {
-	app.Context.Stats.AddHit(r.RequestURI)
-	t := template.New(app.Context.ContentRoot, app.Context.APIHost+":"+strconv.Itoa(app.Context.ListenPort))
+	app.Cntxt.Stats.AddHit(r.RequestURI)
+	t := template.New(app.Cntxt.ContentRoot, app.Cntxt.APIHost+":"+strconv.Itoa(app.Cntxt.ListenPort))
 	t.StatsHitsHandler(w, r)
 }
 
@@ -51,11 +51,11 @@ func realMain() int {
 	// setup JSON request handlers
 	api := rest.NewApi()
 	api.Use(rest.DefaultDevStack...)
-	jrnl := journal.NewMock()
+	jrnl := models.NewMock()
 
 	router, err := rest.MakeRouter(
 		// stats
-		rest.Get("/stats/hits", app.Context.Stats.Get),
+		rest.Get("/stats/hits", app.Cntxt.Stats.Get),
 		// topics
 		rest.Get("/api/topics", jrnl.RestGetTopics),
 		rest.Post("/api/topic/:topic", jrnl.RestPostTopic),
@@ -70,7 +70,7 @@ func realMain() int {
 	mux := http.NewServeMux()
 	mux.Handle("/api/", api.MakeHandler())
 	mux.Handle("/stats/", api.MakeHandler())
-	mux.Handle("/html/skeleton/", http.FileServer(http.Dir(app.Context.ContentRoot)))
+	mux.Handle("/html/skeleton/", http.FileServer(http.Dir(app.Cntxt.ContentRoot)))
 	mux.Handle("/html/tmpl/index", http.HandlerFunc(templateHomeHandler))
 	mux.Handle("/html/tmpl/topic", http.HandlerFunc(templateTopicHandler))
 	mux.Handle("/html/tmpl/hits", http.HandlerFunc(statsHitsHandler))
@@ -79,7 +79,7 @@ func realMain() int {
 	server := &graceful.Server{
 		Timeout: 10 * time.Second,
 		Server: &http.Server{
-			Addr:    ":" + strconv.Itoa(app.Context.ListenPort),
+			Addr:    ":" + strconv.Itoa(app.Cntxt.ListenPort),
 			Handler: mux,
 		},
 		ListenLimit: 1024,

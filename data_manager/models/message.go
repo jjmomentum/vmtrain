@@ -1,7 +1,9 @@
-// Copyright (c) 2015 VMware
+// Package models has the structs that are used by the application.
+//
+// Copyright (c) 2016 VMware
 // Author: Luis M. Valerio (lvaleriocasti@vmware.com)
 //
-// License: MIT 
+// License: MIT
 //
 package models
 
@@ -10,10 +12,10 @@ import (
 	"log"
 )
 
-// Messsage for storing in journal queues.
+// Message for storing in journal queues.
 type Message struct {
 	// Unique id for this Message.
-	Id int `json:"id"`
+	ID int `json:"id"`
 
 	// The message, which in JSON must be Base64 encoded.
 	Base64 []byte `json:"message"`
@@ -21,12 +23,12 @@ type Message struct {
 
 // Initialize a Message back to 'empty' (effectively, zeroed out).
 func (m *Message) init() {
-	m.Id = 0
+	m.ID = 0
 	m.Base64 = make([]byte, 0)
 }
 
-// Populate a message from JSON data.
-func (m *Message) FromJson(bytes []byte) {
+// FromJSON populates a message from JSON data.
+func (m *Message) FromJSON(bytes []byte) {
 	m.init()
 	if err := json.Unmarshal(bytes, m); err != nil {
 		log.Println(err)
@@ -34,8 +36,8 @@ func (m *Message) FromJson(bytes []byte) {
 	}
 }
 
-// Return a JSON formatted string representation of the Message.
-func (m *Message) ToJson() string {
+// ToJSON returns a JSON formatted string representation of the Message.
+func (m *Message) ToJSON() string {
 	b, _ := json.Marshal(m)
 	return string(b)
 }

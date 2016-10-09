@@ -1,7 +1,9 @@
+// Package template holds templates for all the packages.
+//
 // Copyright (c) 2015 VMware
 // Author: Luis M. Valerio (lvaleriocasti@vmware.com)
 //
-// License: MIT 
+// License: MIT
 //
 package template
 
@@ -16,12 +18,13 @@ import (
 	"github.com/tdhite/q3-training-journal/stats"
 )
 
+// Template is a client to get topics
 type Template struct {
 	ContentRoot string
 	APIHost     string
 }
 
-// Return a new Template object initialized -- convenience function.
+// New returns a new Template object initialized -- convenience function.
 func New(contentRoot string, apiHost string) Template {
 	return Template{
 		ContentRoot: contentRoot,

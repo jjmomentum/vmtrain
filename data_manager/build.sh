@@ -24,7 +24,7 @@ case "$OSTYPE" in
 esac
 
 MS_NAME="data_manager"
-PKG_LIST="models stats template"
+PKG_LIST="models stats template app ."
 REPO_PATH="${GOPATH}/src/github.com/vmtrain"
 BUILD_IMAGE="docker.io/golang:1.6"
 GO_VERSION="1.6"
@@ -169,7 +169,7 @@ function build() {
 
 function buildApps() {
     display "================================================================================"
-    echo "Building Apps"
+    echo "Building Packages"
     display "================================================================================"
 
 	for cmd in $PKG_LIST; do

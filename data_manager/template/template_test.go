@@ -1,7 +1,9 @@
+// Package template holds templates for all the packages.
+//
 // Copyright (c) 2015 VMware
 // Author: Luis M. Valerio (lvaleriocasti@vmware.com)
 //
-// License: MIT 
+// License: MIT
 //
 package template
 
