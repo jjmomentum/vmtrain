@@ -3,7 +3,7 @@
 //
 // License: MIT
 //
-package datamanager
+package models
 
 import (
 	"log"

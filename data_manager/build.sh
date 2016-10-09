@@ -25,7 +25,7 @@ esac
 
 MS_NAME="data_manager"
 PKG_LIST="models stats template"
-REPO_PATH="${GOPATH}/src/github.com/vmtrain/data_manager"
+REPO_PATH="${GOPATH}/src/github.com/vmtrain"
 BUILD_IMAGE="docker.io/golang:1.6"
 GO_VERSION="1.6"
 VERBOSE=0
@@ -44,25 +44,9 @@ function showTestCoverage {
 	# for each pakcage in the package list - we change to that directory to run the
 	# test coverage tools.    go test -coverprofile does not support multiple packages at once
 
-    echo -e "\tCommands:"
-    for cmd in $MS_NAME; do
-        pushd "${REPO_PATH}/cmd/${cmd}" > /dev/null
-
-        rm -f $COVER_FILE
-        go test -coverprofile $COVER_FILE > /dev/null 2>&1
-        if [ -f $COVER_FILE ]
-        then
-            OUTPUT="$(go tool cover -func=$COVER_FILE | grep total:)"
-            COLS=( $OUTPUT )
-            echo -e "\t\t${cmd}: ${COLS[2]}"
-            rm -f $COVER_FILE
-        fi
-        popd > /dev/null
-    done;
-
     echo -e "\tPackages:"
 	for pkg in $PKG_LIST; do
-		pushd "${REPO_PATH}/pkg/${pkg}" > /dev/null
+		pushd "${REPO_PATH}/${MS_NAME}/${pkg}" > /dev/null
 
 		rm -f $COVER_FILE
 		go test -coverprofile $COVER_FILE > /dev/null 2>&1
@@ -188,12 +172,12 @@ function buildApps() {
     echo "Building Apps"
     display "================================================================================"
 
-	for cmd in $MS_NAME; do
+	for cmd in $PKG_LIST; do
 	    display "================================================================================"
 	    display "BUILDING $cmd PACKAGE"
 	    display "================================================================================"
 
-	    pushd "${REPO_PATH}/cmd/${cmd}" > /dev/null
+	    pushd "${REPO_PATH}/${MS_NAME}/${cmd}" > /dev/null
 	    build $cmd
 	    if [[ $? != 0 ]]; then
 	        echo $cmd build failed.
@@ -208,11 +192,11 @@ function cleanApps() {
 	echo "Cleaning Apps"
 	display "================================================================================"
 
-	for cmd in $MS_NAME; do
+	for cmd in $PKG_LIST; do
 		display "================================================================================"
 		display "Cleaning $cmd PACKAGES"
 		display "================================================================================"
-		pushd "${REPO_PATH}/cmd/${cmd}" > /dev/null
+		pushd "${REPO_PATH}/${MS_NAME}/${cmd}" > /dev/null
 		go clean
 		if [[ $? != 0 ]]; then
 			echo $cmd clean failed.

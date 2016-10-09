@@ -3,7 +3,7 @@
 //
 // License: MIT 
 //
-package journal
+package models
 
 import (
 	"encoding/json"

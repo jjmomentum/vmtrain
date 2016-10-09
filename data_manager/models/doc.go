@@ -8,4 +8,4 @@
 Package datamanager managers the lab data for the lab reservation application.
 */
 
-package datamanager
+package models
