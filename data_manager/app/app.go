@@ -1,7 +1,9 @@
-// Copyright (c) 2016 VMware
-// Author: Tom Hite (thite@vmware.com)
+// Package app is used to accept command line arguments when starting the container.
 //
-// License: MIT (see https://github.com/tdhite/go-reminders/LICENSE).
+// Copyright (c) 2016 VMware
+// Author: Luis M. Valerio (lvaleriocasti@vmware.com)
+//
+// License: MIT
 //
 package app
 
@@ -10,7 +12,8 @@ import (
 	"log"
 )
 
-var Context = New()
+// Cntxt is ues to initialize the state of the service including default ports and host ip
+var Cntxt = New()
 
 // Initialize the flags processor with default values and help messages.
 func initFlags() {
@@ -23,12 +26,12 @@ func initFlags() {
 		apiHostUsage       = "host to use for all API calls made internally."
 	)
 
-	flag.IntVar(&Context.ListenPort, "listenport", listenPortDefault, listenPortUsage)
-	flag.IntVar(&Context.ListenPort, "l", listenPortDefault, listenPortUsage+" (shorthand)")
-	flag.StringVar(&Context.APIHost, "apiHost", apiHostDefault, apiHostUsage)
-	flag.StringVar(&Context.APIHost, "h", apiHostDefault, apiHostUsage+" (shorthand)")
-	flag.StringVar(&Context.ContentRoot, "tplpath", contentRootDefault, contentRootUsage)
-	flag.StringVar(&Context.ContentRoot, "t", contentRootDefault, contentRootUsage+" (shorthand)")
+	flag.IntVar(&Cntxt.ListenPort, "listenport", listenPortDefault, listenPortUsage)
+	flag.IntVar(&Cntxt.ListenPort, "l", listenPortDefault, listenPortUsage+" (shorthand)")
+	flag.StringVar(&Cntxt.APIHost, "apiHost", apiHostDefault, apiHostUsage)
+	flag.StringVar(&Cntxt.APIHost, "h", apiHostDefault, apiHostUsage+" (shorthand)")
+	flag.StringVar(&Cntxt.ContentRoot, "tplpath", contentRootDefault, contentRootUsage)
+	flag.StringVar(&Cntxt.ContentRoot, "t", contentRootDefault, contentRootUsage+" (shorthand)")
 }
 
 // Process application (command line) flags. Note this happens automatically.

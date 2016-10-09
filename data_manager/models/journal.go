@@ -1,9 +1,11 @@
-// Copyright (c) 2015 VMware
-// Author: Tom Hite (thite@vmware.com)
+// Package models has the structs that are used by the application.
 //
-// License: MIT (see https://github.com/tdhite/go-reminders/LICENSE).
+// Copyright (c) 2016 VMware
+// Author: Luis M. Valerio (lvaleriocasti@vmware.com)
 //
-package journal
+// License: MIT
+//
+package models
 
 import (
 	"log"

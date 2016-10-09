@@ -1,22 +1,25 @@
-// Copyright (c) 2016 VMware
-// Author: Tom Hite (thite@vmware.com)
+// Package app is used to accept command line arguments when starting the container.
 //
-// License: MIT (see https://github.com/tdhite/go-reminders/LICENSE).
+// Copyright (c) 2016 VMware
+// Author: Luis M. Valerio (lvaleriocasti@vmware.com)
+//
+// License: MIT
 //
 package app
 
 import "github.com/tdhite/q3-training-journal/stats"
 
-// Global application context variables.
-type AppContext struct {
+// Context is a struct to hold global application context variables.
+type Context struct {
 	ListenPort  int
 	ContentRoot string
 	APIHost     string
 	Stats       stats.Stats
 }
 
-func New() *AppContext {
-	ctx := &AppContext{
+// New generates an AppContext struct
+func New() *Context {
+	ctx := &Context{
 		ListenPort:  80,
 		ContentRoot: ".",
 		APIHost:     "localhost",

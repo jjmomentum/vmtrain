@@ -1,7 +1,9 @@
-// Copyright (c) 2015 VMware
-// Author: Tom Hite (thite@vmware.com)
+// Package stats collects statistics about the application.
 //
-// License: MIT (see https://github.com/tdhite/go-reminders/LICENSE).
+// Copyright (c) 2015 VMware
+// Author: Luis M. Valerio (lvaleriocasti@vmware.com)
+//
+// License: MIT
 //
 package stats
 
@@ -11,25 +13,26 @@ import (
 	"sync"
 )
 
-// store hits per URL
+// Stats store hits per URL
 type Stats struct {
-	hits map[string]int `json:"hits"`
-	lock sync.RWMutex
+	Hits map[string]int `json:"hits"`
+	lock *sync.RWMutex
 }
 
 func init() {
 	log.Println("Initialized stats package.")
 }
 
+// New returns a new Stats struct
 func New() Stats {
 	return Stats{
-		hits: make(map[string]int),
-		lock: sync.RWMutex{},
+		Hits: make(map[string]int),
+		lock: &sync.RWMutex{},
 	}
 }
 
-// Convert a JSON string to Go struct and return.
-func HitsFromJson(jsonData []byte) (map[string]int, error) {
+// HitsFromJSON converts a JSON string to Go struct and return.
+func HitsFromJSON(jsonData []byte) (map[string]int, error) {
 	var hits map[string]int
 	err := json.Unmarshal([]byte(jsonData), &hits)
 	if err != nil {

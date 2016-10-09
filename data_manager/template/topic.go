@@ -1,7 +1,9 @@
-// Copyright (c) 2015 VMware
-// Author: Tom Hite (thite@vmware.com)
+// Package template holds templates for all the packages.
 //
-// License: MIT (see https://github.com/tdhite/go-reminders/LICENSE).
+// Copyright (c) 2015 VMware
+// Author: Luis M. Valerio (lvaleriocasti@vmware.com)
+//
+// License: MIT
 //
 package template
 
@@ -14,12 +16,13 @@ import (
 	"github.com/tdhite/q3-training-journal/journal"
 )
 
+// Topics holds topics information
 type Topics struct {
 	Topic    string
 	Messages []journal.Message
 }
 
-// Generate topic Message list.
+// TopicHandler generates topic Message list.
 func (t *Template) TopicHandler(w http.ResponseWriter, r *http.Request) {
 	path := filepath.Join(t.ContentRoot, r.URL.Path) + ".html"
 	page := filepath.Base(path)

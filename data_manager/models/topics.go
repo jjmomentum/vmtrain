@@ -1,9 +1,11 @@
-// Copyright (c) 2015 VMware
-// Author: Tom Hite (thite@vmware.com)
+// Package models has the structs that are used by the application.
 //
-// License: MIT (see https://github.com/tdhite/go-reminders/LICENSE).
+// Copyright (c) 2016 VMware
+// Author: Luis M. Valerio (lvaleriocasti@vmware.com)
 //
-package journal
+// License: MIT
+//
+package models
 
 import (
 	"encoding/json"
@@ -17,16 +19,16 @@ type Topics struct {
 	Topics []string `json:"topics"`
 }
 
-// Populate Topics from JSON data.
-func (t *Topics) FromJson(bytes []byte) {
+// FromJSON populates Topics from JSON data.
+func (t *Topics) FromJSON(bytes []byte) {
 	if err := json.Unmarshal(bytes, t); err != nil {
 		log.Println(err)
 		t.Topics = make([]string, 0)
 	}
 }
 
-// Return a JSON formatted string representation of the Topics.
-func (t *Topics) ToJson() string {
+// ToJSON returns a JSON formatted string representation of the Topics.
+func (t *Topics) ToJSON() string {
 	b, err := json.Marshal(t)
 	if err != nil {
 		b = make([]byte, 0)

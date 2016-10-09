@@ -1,7 +1,9 @@
-// Copyright (c) 2015 VMware
-// Author: Tom Hite (thite@vmware.com)
+// Package stats collects statistics about the application.
 //
-// License: MIT (see https://github.com/tdhite/go-reminders/LICENSE).
+// Copyright (c) 2015 VMware
+// Author: Luis M. Valerio (lvaleriocasti@vmware.com)
+//
+// License: MIT
 //
 package stats
 
@@ -9,10 +11,11 @@ import (
 	"github.com/ant0ine/go-json-rest/rest"
 )
 
+// Get is a handler to handle hit requests
 func (s *Stats) Get(w rest.ResponseWriter, r *rest.Request) {
 	s.AddHit(r.RequestURI)
 	s.lock.Lock()
-	err := w.WriteJson(s.hits)
+	err := w.WriteJson(s.Hits)
 	s.lock.Unlock()
 	if err != nil {
 		rest.Error(w, err.Error(), 503)

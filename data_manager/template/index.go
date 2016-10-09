@@ -1,7 +1,9 @@
-// Copyright (c) 2015 VMware
-// Author: Tom Hite (thite@vmware.com)
+// Package template holds templates for all the packages.
 //
-// License: MIT (see https://github.com/tdhite/go-reminders/LICENSE).
+// Copyright (c) 2015 VMware
+// Author: Luis M. Valerio (lvaleriocasti@vmware.com)
+//
+// License: MIT
 //
 package template
 
@@ -12,7 +14,7 @@ import (
 	"path/filepath"
 )
 
-// Generate the main (home) page of the site.
+// IndexHandler generates the main (home) page of the site.
 func (t *Template) IndexHandler(w http.ResponseWriter, r *http.Request) {
 	topics := t.getAllTopics()
 

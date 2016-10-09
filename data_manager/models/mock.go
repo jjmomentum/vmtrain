@@ -1,9 +1,11 @@
-// Copyright (c) 2015 VMware
-// Author: Tom Hite (thite@vmware.com)
+// Package models has the structs that are used by the application.
 //
-// License: MIT (see https://github.com/tdhite/go-reminders/LICENSE).
+// Copyright (c) 2016 VMware
+// Author: Luis M. Valerio (lvaleriocasti@vmware.com)
 //
-package journal
+// License: MIT
+//
+package models
 
 import (
 	"log"
@@ -13,7 +15,7 @@ import (
 	"github.com/tdhite/q3-training-journal/app"
 )
 
-// A Topic is a single FIFO queue.
+// Topic is a single FIFO queue.
 type Topic struct {
 	// The cursor points to the Message that the queue will return on a
 	// GetTopic call.
@@ -26,7 +28,7 @@ type Topic struct {
 	messages []*Message
 }
 
-// A Mock journal, which implements a purely in-memory FIFO topic journal.
+// Mock journal, which implements a purely in-memory FIFO topic journal.
 type Mock struct {
 	// A lock channel for implementing semaphore blocked access to Mocks.
 	lock chan int /* not used yet */
@@ -35,7 +37,7 @@ type Mock struct {
 	topics map[string]Topic
 }
 
-// Create and return a new Mock journal.
+// NewMock returns a new Mock journal.
 func NewMock() *Mock {
 	mock := &Mock{
 		make(chan int),
@@ -56,14 +58,13 @@ func (t *Topic) getMessage() *Message {
 	log.Printf("There are %d messages\n", msgs)
 	if t.cursor < msgs {
 		msg := t.messages[t.cursor]
-		t.cursor += 1
+		t.cursor++
 		return msg
-	} else {
-		return nil
 	}
+	return nil
 }
 
-// Retrieve the next message on the queue. If peek is false, the queue
+// GetTopic retrieves the next message on the queue. If peek is false, the queue
 // cursor updates to point at the next (FIFO) message. If peek is true the
 // cursor remains unchanged.
 func (m *Mock) GetTopic(topic string, peek bool) *Message {
@@ -80,7 +81,7 @@ func (m *Mock) GetTopic(topic string, peek bool) *Message {
 	return nil
 }
 
-// Retrieve all Message entries in a queue. This is purely a convenience
+// PeekTopicMessages retrieves all Message entries in a queue. This is purely a convenience
 // function for viewing messages, for example, in a UI for debugging
 // purposes or to potentially replay a portion of a journal topic. The
 // journal itself remains unmodified.
@@ -99,7 +100,7 @@ func (m *Mock) PeekTopicMessages(topic string) []Message {
 	return nil
 }
 
-// Return all topics in the journal.
+// GetTopics returns all topics in the journal.
 func (m *Mock) GetTopics() *Topics {
 	keys := make([]string, len((m.topics)))
 	i := 0
@@ -115,7 +116,7 @@ func (m *Mock) GetTopics() *Topics {
 	return topics
 }
 
-// Add a message to the Topic.
+// Append adds a message to the Topic.
 func (m *Mock) Append(topic string, msg *Message) {
 	t, ok := m.topics[topic]
 	if !ok {
@@ -128,7 +129,7 @@ func (m *Mock) Append(topic string, msg *Message) {
 	m.topics[topic] = t
 }
 
-// REST handler to retrieve the current journal topic message.
+// RestGetTopic is a REST handler to retrieve the current journal topic message.
 func (m *Mock) RestGetTopic(w rest.ResponseWriter, r *rest.Request) {
 	app.Context.Stats.AddHit(r.RequestURI)
 
@@ -153,14 +154,14 @@ func (m *Mock) RestGetTopic(w rest.ResponseWriter, r *rest.Request) {
 	}
 }
 
-// REST handler to retrieve the current journal topic message.
+// RestGetTopics is a REST handler to retrieve the current journal topic message.
 func (m *Mock) RestGetTopics(w rest.ResponseWriter, r *rest.Request) {
 	app.Context.Stats.AddHit(r.RequestURI)
 	topics := m.GetTopics()
 	w.WriteJson(topics)
 }
 
-// REST handler to retrieve the current journal topic message.
+// RestPostTopic is a REST handler to retrieve the current journal topic message.
 func (m *Mock) RestPostTopic(w rest.ResponseWriter, r *rest.Request) {
 	app.Context.Stats.AddHit(r.RequestURI)
 
@@ -170,7 +171,7 @@ func (m *Mock) RestPostTopic(w rest.ResponseWriter, r *rest.Request) {
 		rest.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	log.Printf("appending: %s:%p to topic %s in %v, which is %d in length.\n", msg.ToJson(), &msg, topic, *m, len(m.topics))
+	log.Printf("appending: %s:%p to topic %s in %v, which is %d in length.\n", msg.ToJSON(), &msg, topic, *m, len(m.topics))
 	m.Append(topic, &msg)
 	w.WriteJson(&msg)
 }
