@@ -1,0 +1,22 @@
+<div class="modal-header">
+  <h3 class="modal-title">Reservation</h3>
+</div>
+<div class="modal-body">
+  <div class="form-group">
+    <label for="name">Name</label>
+    <input type="text" class="form-control" id="name" value="{{rmCtrl.calendarEvent.details.name}}">
+  </div>
+  <div class="form-group">
+    <label for="date">Date</label>
+    <input type="text" class="form-control" id="date" value="{{rmCtrl.calendarEvent.startsAt.toLocaleDateString()}}" disabled>
+  </div>
+  <div class="form-group">
+    <label for="server">Server</label>
+    <input type="text" class="form-control" id="server" value="{{rmCtrl.calendarEvent.details.server}}" disabled>
+  </div>
+</div>
+<div class="modal-footer">
+  <button class="btn btn-primary" type="button" ng-click="rmCtrl.save()">Save</button>
+  <button class="btn btn-warning" type="button" ng-click="rmCtrl.cancel()">Cancel</button>
+</div>
+

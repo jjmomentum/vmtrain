@@ -5,7 +5,7 @@ describe('Controller: DashboardCtrl', function () {
   // load the controller's module
   beforeEach(module('app'));
 
-  var MainCtrl,
+  var DashboardCtrl,
     scope;
 
   // Initialize the controller and a mock scope
@@ -18,6 +18,6 @@ describe('Controller: DashboardCtrl', function () {
   }));
 
   it('should attach a list of awesomeThings to the scope', function () {
-    expect(MainCtrl.awesomeThings.length).toBe(3);
+    expect(DashboardCtrl.awesomeThings.length).toBe(3);
   });
 });

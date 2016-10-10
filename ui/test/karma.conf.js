@@ -30,8 +30,9 @@ module.exports = function(config) {
       'bower_components/angular-sanitize/angular-sanitize.js',
       'bower_components/angular-touch/angular-touch.js',
       'bower_components/moment/moment.js',
-      'bower_components/fullcalendar/dist/fullcalendar.js',
-      'bower_components/angular-ui-calendar/src/calendar.js',
+      'bower_components/bootstrap/dist/js/bootstrap.js',
+      'bower_components/angular-bootstrap-calendar/dist/js/angular-bootstrap-calendar-tpls.js',
+      'bower_components/angular-bootstrap/ui-bootstrap-tpls.js',
       'bower_components/angular-mocks/angular-mocks.js',
       // endbower
       'app/scripts/**/*.js',
