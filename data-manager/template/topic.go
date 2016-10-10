@@ -13,13 +13,13 @@ import (
 	"net/http"
 	"path/filepath"
 
-	"github.com/vmtrain/data-manager/journal"
+	"github.com/vmtrain/data-manager/models"
 )
 
 // Topics holds topics information
 type Topics struct {
 	Topic    string
-	Messages []journal.Message
+	Messages []models.Message
 }
 
 // TopicHandler generates topic Message list.
