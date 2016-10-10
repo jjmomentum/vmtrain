@@ -14,8 +14,8 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/tdhite/q3-training-journal/journal"
-	"github.com/tdhite/q3-training-journal/stats"
+	"github.com/vmtrain/data-manager/models"
+	"github.com/vmtrain/data-manager/stats"
 )
 
 // Template is a client to get topics
@@ -41,7 +41,7 @@ func (t *Template) generateAPIUrl(path string) string {
 }
 
 // Retrieve all Message entries from a topic via REST call.
-func (t *Template) getTopic(topic string) []journal.Message {
+func (t *Template) getTopic(topic string) []models.Message {
 	url := t.generateAPIUrl("/api/topic/" + topic + "?peekall=true")
 	log.Println("url: " + url)
 
@@ -52,7 +52,7 @@ func (t *Template) getTopic(topic string) []journal.Message {
 	body, err := ioutil.ReadAll(res.Body)
 	perror(err)
 
-	var msgs []journal.Message
+	var msgs []models.Message
 	if err := json.Unmarshal(body, &msgs); err != nil {
 		log.Println(err)
 	}
@@ -61,7 +61,7 @@ func (t *Template) getTopic(topic string) []journal.Message {
 }
 
 // Retrieve all Topic names via REST call.
-func (t *Template) getAllTopics() *journal.Topics {
+func (t *Template) getAllTopics() *models.Topics {
 	url := t.generateAPIUrl("/api/topics")
 	log.Println("url: " + url)
 
@@ -72,14 +72,14 @@ func (t *Template) getAllTopics() *journal.Topics {
 	body, err := ioutil.ReadAll(res.Body)
 	perror(err)
 
-	topics := &journal.Topics{}
-	topics.FromJson(body)
+	topics := &models.Topics{}
+	topics.FromJSON(body)
 
 	return topics
 }
 
-// Add a topic message, to the journal via REST call.
-func (t *Template) postTopic(topic string, msg journal.Message) {
+// Add a topic message, to the models via REST call.
+func (t *Template) postTopic(topic string, msg models.Message) {
 	jsonData, err := json.Marshal(msg)
 	perror(err)
 
@@ -113,7 +113,7 @@ func (t *Template) getStatsHits() map[string]int {
 	body, err := ioutil.ReadAll(res.Body)
 	perror(err)
 
-	data, err := stats.HitsFromJson(body)
+	data, err := stats.HitsFromJSON(body)
 	perror(err)
 
 	return data

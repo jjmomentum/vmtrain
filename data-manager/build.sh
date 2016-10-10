@@ -23,7 +23,8 @@ case "$OSTYPE" in
 		;;
 esac
 
-MS_NAME="data_manager"
+MS_NAME="data-manager"
+MS_PORT=6001
 PKG_LIST="models stats template app ."
 REPO_PATH="${GOPATH}/src/github.com/vmtrain"
 BUILD_IMAGE="docker.io/golang:1.6"
@@ -139,27 +140,6 @@ function testApps() {
 	showTestCoverage
 }
 
-
-makeDocker() {
-	display ""
-	display "================================================================================"
-	echo "Deploying Docker image:"
-	display "================================================================================"
-	if ! type "docker" > /dev/null 2>&1; then
-		# Can't find docker ;)    Let's install it
-		echo "ERROR: Cannot run docker"
-		exit 1
-	fi
-	if [ "$HOST_OS" == "darwin" ]; then
-		eval $(docker-machine env dev-dev)
-	fi
-    docker build -t $1 .
-    if [ $? -ne 0 ]; then 
-        echo "error building docker image"
-        exit 1
-    fi
-}
-
 function build() {
     # we should already have the dependencies from canticle
 	# now let's build it
@@ -212,6 +192,12 @@ function cleanApps() {
 		echo "Removing junit.xml"
 		rm junit.xml
 	fi
+	go clean
+    rm -f $MS_NAME
+    echo "Cleaning up Docker Engine before building."
+    docker kill $(docker ps -a | grep $MS_NAME) || echo -
+    docker rm $(docker ps -a | grep $MS_NAME) || echo -
+    docker rmi $MS_NAME:$VERSION
 }
 
 function SetGoEnvironment {
@@ -272,10 +258,47 @@ function display {
 	fi
 }
 
-function createContainer {
+makeDocker() {
+	display ""
+	display "================================================================================"
+	echo "Deploying Docker image:"
+	display "================================================================================"
+	if ! type "docker" > /dev/null 2>&1; then
+		# Can't find docker ;)    Let's install it
+		echo "ERROR: Cannot run docker"
+		exit 1
+	fi
+	if [ "$HOST_OS" == "darwin" ]; then
+		eval $(docker-machine env dev-dev)
+		#docker run -it -v "$PWD":/go/src/github.com/vmtrain/data-manager -w /go/src/github.com/vmtrain/data-manager golang:1.6 ./build.sh data-manager
+    	docker build -t $1 --rm=true .
+	else
+		docker build -t $1 --rm=true .
+	    if [ $? -ne 0 ]; then 
+	        echo "error building docker image"
+	        exit 1
+	    fi
+	fi
+}
+
+dataManager(){
 	CGO_ENABLED=0 
 	go build -a --installsuffix cgo .
-	docker build -t q3-training-journal --rm=true .
+}
+
+startService(){
+	docker run -d -p $MS_PORT:$MS_PORT data-manager:$VERSION /data-manager -l $MS_PORT -t .
+	if [ $? -ne 0 ]; then 
+        echo "error running $MS_NAME microservice"
+        exit 1
+	fi
+}
+
+stopService(){
+	killall data-manager
+	if [[ $? != 0 ]]; then
+		echo "error stopping $MS_NAME microservice"
+	fi
 }
 
 while getopts ":vc" opt; do
@@ -337,17 +360,32 @@ case "$COMMAND" in
 		testApps
 		echo "Done"
 		;;
+	start)
+		SetGoEnvironment
+		startService
+		echo "Done"
+		;;
+	stop)
+		SetGoEnvironment
+		stopService
+		echo "Done"
+		;;
+	data-manager)
+		dataManager
+		echo "Done"
+		;;
     containerize)
         echo "Containerizing Apps"
         TARGET_OS='linux'
         SetGoEnvironment
+        cleanApps
         buildApps
-        makeDocker datamanager:$VERSION
-        echo created container datamanager:$VERSION
+        makeDocker data-manager:$VERSION
+        echo created container data-manager:$VERSION
         echo "Done"
         ;;
 	
 	*)
-		echo "USAGE:   build.sh [build|clean|test|containerize]"
+		echo "USAGE:   build.sh [build|clean|test|start|stop|containerize]"
 		;;
 esac

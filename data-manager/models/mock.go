@@ -12,7 +12,7 @@ import (
 	"net/http"
 
 	"github.com/ant0ine/go-json-rest/rest"
-	"github.com/tdhite/q3-training-journal/app"
+	"github.com/vmtrain/data-manager/app"
 )
 
 // Topic is a single FIFO queue.
@@ -131,7 +131,7 @@ func (m *Mock) Append(topic string, msg *Message) {
 
 // RestGetTopic is a REST handler to retrieve the current journal topic message.
 func (m *Mock) RestGetTopic(w rest.ResponseWriter, r *rest.Request) {
-	app.Context.Stats.AddHit(r.RequestURI)
+	app.Cntxt.Stats.AddHit(r.RequestURI)
 
 	peekall := r.URL.Query().Get("peekall")
 	topic := r.PathParam("topic")
@@ -156,14 +156,14 @@ func (m *Mock) RestGetTopic(w rest.ResponseWriter, r *rest.Request) {
 
 // RestGetTopics is a REST handler to retrieve the current journal topic message.
 func (m *Mock) RestGetTopics(w rest.ResponseWriter, r *rest.Request) {
-	app.Context.Stats.AddHit(r.RequestURI)
+	app.Cntxt.Stats.AddHit(r.RequestURI)
 	topics := m.GetTopics()
 	w.WriteJson(topics)
 }
 
 // RestPostTopic is a REST handler to retrieve the current journal topic message.
 func (m *Mock) RestPostTopic(w rest.ResponseWriter, r *rest.Request) {
-	app.Context.Stats.AddHit(r.RequestURI)
+	app.Cntxt.Stats.AddHit(r.RequestURI)
 
 	topic := r.PathParam("topic")
 	var msg Message

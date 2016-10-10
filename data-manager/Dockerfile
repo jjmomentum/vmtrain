@@ -5,7 +5,7 @@ FROM scratch
 MAINTAINER Luis M. Valerio <lvaleriocasti@vmware.com>
 
 # Add the microservice
-ADD q3-training-journal /q3-training-journal
+ADD data-manager /data-manager
 
 # Add the content (html and templates)
 ADD html /html

@@ -4,7 +4,7 @@ The queues are FIFO.
 
 # Getting Started
 Until such time as we release this repository to the public, clone it in
-your GOPATH at src/github.com/tdhite/q3-training-journal, then build it:
+your GOPATH at src/github.com/vmtrain/data-manager, then build it:
 
 For example:
 
@@ -21,7 +21,7 @@ Note for Docker for Mac users:
 If you get an error like: `standard_init_linux.go:175: exec user process caused "exec format error"` do the build like this:
 (See issue: https://github.com/docker/docker/issues/23865)
 
-    docker run -it -v "$PWD":/go/src/github.com/tdhite/q3-training-journal -w /go/src/github.com/tdhite/q3-training-journal golang:1.6 make q3-training-journal
+    docker run -it -v "$PWD":/go/src/github.com/vmtrain/data-manager -w /go/src/github.com/vmtrain/data-manager golang:1.6 make q3-training-journal
     docker build -t q3-training-journal --rm=true .
 
 ## The API

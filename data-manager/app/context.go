@@ -7,7 +7,7 @@
 //
 package app
 
-import "github.com/tdhite/q3-training-journal/stats"
+import "github.com/vmtrain/data-manager/stats"
 
 // Context is a struct to hold global application context variables.
 type Context struct {

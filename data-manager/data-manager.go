@@ -14,9 +14,9 @@ import (
 
 	"github.com/ant0ine/go-json-rest/rest"
 	"github.com/stretchr/graceful"
-	"github.com/vmtrain/data_manager/app"
-	"github.com/vmtrain/data_manager/models"
-	"github.com/vmtrain/data_manager/template"
+	"github.com/vmtrain/data-manager/app"
+	"github.com/vmtrain/data-manager/models"
+	"github.com/vmtrain/data-manager/template"
 )
 
 // Http handler functions for dealing with various site requests for
