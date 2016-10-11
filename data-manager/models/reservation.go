@@ -13,13 +13,13 @@ import (
 
 // Reservation is the struct to hold reservation data about the lab environment
 type Reservation struct {
-	ID int `json:"id"`
+	Name string `json:"name"`
 
-	User string `json:"user"`
+	StartDate string `json:"start_date"`
 
-	Date string `json:"date"`
+	EndDate string `json:"end_date"`
 
-	Server string `json:"server"`
+	ServerName string `json:"server_name"`
 
 	Status string `json:"status"`
 }
