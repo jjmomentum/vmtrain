@@ -56,10 +56,10 @@ func realMain() int {
 	router, err := rest.MakeRouter(
 		// stats
 		rest.Get("/stats/hits", app.Cntxt.Stats.Get),
-		// topics
-		rest.Get("/api/topics", jrnl.RestGetTopics),
-		rest.Post("/api/topic/:topic", jrnl.RestPostTopic),
-		rest.Get("/api/topic/:topic", jrnl.RestGetTopic),
+		// lab pool data
+		rest.Post("/api/reservations", app.CreateReservation),
+		rest.Get("/api/reservations", app.ShowReservationList),
+		rest.Post("/api/servers", app.CreateServer),
 	)
 	if err != nil {
 		log.Fatal(err)
