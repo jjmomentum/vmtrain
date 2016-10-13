@@ -9,92 +9,22 @@ package app
 
 import "net/http"
 
-// JobCreate creates a job and stores it in etcd
-// Request URL:
-// 		/jobs
-// Request body:
-// {
-//  apiVersion: <v>
-//  kind: GeronimoJob
-//  spec: {
-//    system: <system>
-//    environment: <environ>
-//  }
-// }
-// Response:
-// {
-//  apiVersion: <v>
-//  kind: GeronimoJob
-//  metadata: {
-//    uuid: <id>
-//    selfLink: /job/<id>
-//    creationTimestamp: <iso8601>
-//    clusterAddress: <ip address>
-//  }
-//  spec: {
-//    system: <system>
-//    environment: <environment>
-//  }
-//  status: {
-//    phase: PENDING|ACTIVE|COMPLETED|FAILED
-//    startTimestamp: <iso8601>
-//    endTimestamp: <iso8601>
-//  }
-// }
+// CreateServer creates a job and stores it in etcd
 func CreateServer(w http.ResponseWriter, r *http.Request) {
 	//TODO add logic to create a server and store it in the blob service
 }
 
-// JobCreate creates a job and stores it in etcd
-// Request URL:
-// 		/jobs
-// Request body:
-// {
-//  apiVersion: <v>
-//  kind: GeronimoJob
-//  spec: {
-//    system: <system>
-//    environment: <environ>
-//  }
-// }
-// Response:
-// {
-//  apiVersion: <v>
-//  kind: GeronimoJob
-//  metadata: {
-//    uuid: <id>
-//    selfLink: /job/<id>
-//    creationTimestamp: <iso8601>
-//    clusterAddress: <ip address>
-//  }
-//  spec: {
-//    system: <system>
-//    environment: <environment>
-//  }
-//  status: {
-//    phase: PENDING|ACTIVE|COMPLETED|FAILED
-//    startTimestamp: <iso8601>
-//    endTimestamp: <iso8601>
-//  }
-// }
+// ShowServerList displays a list of jobs stored in etcd
+func ShowServerList(w http.ResponseWriter, r *http.Request) {
+	// TODO add logic to show a list of reservations
+}
+
+// CreateReservation creates a job and stores it in etcd
 func CreateReservation(w http.ResponseWriter, r *http.Request) {
 	// TODO add logic to create a reservation and add it to the blob service
 }
 
-// JobsListShow displays a list of jobs stored in etcd
-// Request URL:
-// 		/jobs
-// Response:
-// {
-//  apiVersion: <v>
-//  kind: GeronimoJobsList
-//  metadata: {}
-//  items: [
-//    <GeronimoJob>
-//    <GeronimoJob>
-//    <GeronimoJob>
-//  ]
-// }
+// ShowReservationList displays a list of jobs stored in etcd
 func ShowReservationList(w http.ResponseWriter, r *http.Request) {
 	// TODO add logic to show a list of reservations
 }
