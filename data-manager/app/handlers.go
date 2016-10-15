@@ -8,25 +8,141 @@
 package app
 
 import (
+	"encoding/json"
+	"io"
+	"io/ioutil"
+	"log"
+	"net/http"
+
 	"github.com/ant0ine/go-json-rest/rest"
+	"github.com/pborman/uuid"
+	"github.com/vmtrain/data-manager/models"
 )
 
-// CreateServer creates a job and stores it in etcd
+// CreateServer creates a server
 func CreateServer(w rest.ResponseWriter, r *rest.Request) {
-	//TODO add logic to create a server and store it in the blob service
+	var server models.Server
+	// Read and validate the request. The read on the request body is limited
+	// to prevent malicious attacks on the server.
+	body, err := ioutil.ReadAll(io.LimitReader(r.Body, 1048576))
+	if err != nil {
+		rest.Error(w, err.Error(), http.StatusBadRequest)
+	} else {
+		defer r.Body.Close()
+		log.Printf("The body received is %s", string(body))
+
+		// Unmarshal and validate JSON
+		err = json.Unmarshal(body, server)
+		if err != nil {
+			rest.Error(w, err.Error(), http.StatusBadRequest)
+		} else {
+			if server.Name == "" {
+				rest.Error(w, "Missing 'name' in the request payload", http.StatusBadRequest)
+			} else {
+				// Store in the blob service
+				savedServer, status, err := Cntxt.backend.SaveServer(server)
+				if err != nil {
+					rest.Error(w, err.Error(), status)
+				} else {
+					w.WriteJson(savedServer)
+				}
+			}
+		}
+	}
 }
 
-// ShowServerList displays a list of jobs stored in etcd
+// ShowServerList displays a list of servers
 func ShowServerList(w rest.ResponseWriter, r *rest.Request) {
-	// TODO add logic to show a list of reservations
+	serverList, status, err := Cntxt.backend.GetServers()
+	if err != nil {
+		rest.Error(w, err.Error(), status)
+	} else {
+		w.WriteJson(serverList)
+	}
 }
 
-// CreateReservation creates a job and stores it in etcd
+// CreateReservation creates a reservation
 func CreateReservation(w rest.ResponseWriter, r *rest.Request) {
-	// TODO add logic to create a reservation and add it to the blob service
+	var reservation models.Reservation
+	// Read and validate the request. The read on the request body is limited
+	// to prevent malicious attacks on the server.
+	body, err := ioutil.ReadAll(io.LimitReader(r.Body, 1048576))
+	if err != nil {
+		rest.Error(w, err.Error(), http.StatusBadRequest)
+	} else {
+		defer r.Body.Close()
+		log.Printf("The body received is %s", string(body))
+
+		// Unmarshal and validate JSON
+		err = json.Unmarshal(body, reservation)
+		if err != nil {
+			rest.Error(w, err.Error(), http.StatusBadRequest)
+		} else {
+			if reservation.UUID == "" {
+				reservation.UUID = uuid.New()
+			}
+
+			// Store in the blob service
+			savedReservation, status, err := Cntxt.backend.SaveReservation(reservation)
+			if err != nil {
+				rest.Error(w, err.Error(), status)
+			} else {
+				w.WriteJson(savedReservation)
+			}
+
+		}
+	}
 }
 
-// ShowReservationList displays a list of jobs stored in etcd
+// ShowReservationList displays a list of reservations
 func ShowReservationList(w rest.ResponseWriter, r *rest.Request) {
-	// TODO add logic to show a list of reservations
+	reservationList, status, err := Cntxt.backend.GetReservations()
+	if err != nil {
+		rest.Error(w, err.Error(), status)
+	} else {
+		w.WriteJson(reservationList)
+	}
+}
+
+// CreateUser creates a user
+func CreateUser(w rest.ResponseWriter, r *rest.Request) {
+	var user models.User
+	// Read and validate the request. The read on the request body is limited
+	// to prevent malicious attacks on the server.
+	body, err := ioutil.ReadAll(io.LimitReader(r.Body, 1048576))
+	if err != nil {
+		rest.Error(w, err.Error(), http.StatusBadRequest)
+	} else {
+		defer r.Body.Close()
+		log.Printf("The body received is %s", string(body))
+
+		// Unmarshal and validate JSON
+		err = json.Unmarshal(body, user)
+		if err != nil {
+			rest.Error(w, err.Error(), http.StatusBadRequest)
+		} else {
+			if user.UUID == "" {
+				user.UUID = uuid.New()
+			}
+
+			// Store in the blob service
+			savedUser, status, err := Cntxt.backend.SaveUser(user)
+			if err != nil {
+				rest.Error(w, err.Error(), status)
+			} else {
+				w.WriteJson(savedUser)
+			}
+
+		}
+	}
+}
+
+// ShowUserList displays a list of users
+func ShowUserList(w rest.ResponseWriter, r *rest.Request) {
+	userList, status, err := Cntxt.backend.GetUsers()
+	if err != nil {
+		rest.Error(w, err.Error(), status)
+	} else {
+		w.WriteJson(userList)
+	}
 }

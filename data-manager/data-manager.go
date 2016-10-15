@@ -52,6 +52,9 @@ func realMain() int {
 		rest.Post("/api/reservations", app.CreateReservation),
 		rest.Get("/api/reservations", app.ShowReservationList),
 		rest.Post("/api/servers", app.CreateServer),
+		rest.Get("/api/servers", app.ShowServerList),
+		rest.Post("/api/users", app.CreateUser),
+		rest.Get("/api/users", app.ShowUserList),
 	)
 	if err != nil {
 		log.Fatal(err)
