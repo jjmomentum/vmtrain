@@ -7,24 +7,26 @@
 //
 package app
 
-import "net/http"
+import (
+	"github.com/ant0ine/go-json-rest/rest"
+)
 
 // CreateServer creates a job and stores it in etcd
-func CreateServer(w http.ResponseWriter, r *http.Request) {
+func CreateServer(w rest.ResponseWriter, r *rest.Request) {
 	//TODO add logic to create a server and store it in the blob service
 }
 
 // ShowServerList displays a list of jobs stored in etcd
-func ShowServerList(w http.ResponseWriter, r *http.Request) {
+func ShowServerList(w rest.ResponseWriter, r *rest.Request) {
 	// TODO add logic to show a list of reservations
 }
 
 // CreateReservation creates a job and stores it in etcd
-func CreateReservation(w http.ResponseWriter, r *http.Request) {
+func CreateReservation(w rest.ResponseWriter, r *rest.Request) {
 	// TODO add logic to create a reservation and add it to the blob service
 }
 
 // ShowReservationList displays a list of jobs stored in etcd
-func ShowReservationList(w http.ResponseWriter, r *http.Request) {
+func ShowReservationList(w rest.ResponseWriter, r *rest.Request) {
 	// TODO add logic to show a list of reservations
 }

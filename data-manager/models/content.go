@@ -8,10 +8,7 @@
 package models
 
 // Blob is a struct used to store data into the blob service.
-type Blob struct {
-	ID      int     `json:"id"`
-	Version string  `json:"version"`
-	Name    string  `json:"name"`
-	Content Content `json:"content"`
-	Tag     string  `json:"tag"`
+type Content struct {
+	Servers      map[string]Server      `json:"servers"`
+	Reservations map[string]Reservation `json:"reservations"`
 }

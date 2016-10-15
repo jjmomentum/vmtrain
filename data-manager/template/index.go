@@ -16,7 +16,6 @@ import (
 
 // IndexHandler generates the main (home) page of the site.
 func (t *Template) IndexHandler(w http.ResponseWriter, r *http.Request) {
-	topics := t.getAllTopics()
 
 	path := filepath.Join(t.ContentRoot, r.URL.Path) + ".html"
 	page := filepath.Base(path)
@@ -24,7 +23,7 @@ func (t *Template) IndexHandler(w http.ResponseWriter, r *http.Request) {
 
 	tmpl, err := html_template.New(page).ParseFiles(path)
 	if err == nil {
-		if err := tmpl.ExecuteTemplate(w, page, topics.Topics); err != nil {
+		if err := tmpl.ExecuteTemplate(w, page, map[string]string{"hello": "world"}); err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
 	} else {

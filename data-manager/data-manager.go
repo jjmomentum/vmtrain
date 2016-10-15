@@ -15,7 +15,6 @@ import (
 	"github.com/ant0ine/go-json-rest/rest"
 	"github.com/stretchr/graceful"
 	"github.com/vmtrain/data-manager/app"
-	"github.com/vmtrain/data-manager/models"
 	"github.com/vmtrain/data-manager/template"
 )
 
@@ -33,12 +32,6 @@ func templateHomeHandler(w http.ResponseWriter, r *http.Request) {
 	t.IndexHandler(w, r)
 }
 
-func templateTopicHandler(w http.ResponseWriter, r *http.Request) {
-	app.Cntxt.Stats.AddHit(r.RequestURI)
-	t := template.New(app.Cntxt.ContentRoot, app.Cntxt.APIHost+":"+strconv.Itoa(app.Cntxt.ListenPort))
-	t.TopicHandler(w, r)
-}
-
 func statsHitsHandler(w http.ResponseWriter, r *http.Request) {
 	app.Cntxt.Stats.AddHit(r.RequestURI)
 	t := template.New(app.Cntxt.ContentRoot, app.Cntxt.APIHost+":"+strconv.Itoa(app.Cntxt.ListenPort))
@@ -51,7 +44,6 @@ func realMain() int {
 	// setup JSON request handlers
 	api := rest.NewApi()
 	api.Use(rest.DefaultDevStack...)
-	jrnl := models.NewMock()
 
 	router, err := rest.MakeRouter(
 		// stats
@@ -72,7 +64,6 @@ func realMain() int {
 	mux.Handle("/stats/", api.MakeHandler())
 	mux.Handle("/html/skeleton/", http.FileServer(http.Dir(app.Cntxt.ContentRoot)))
 	mux.Handle("/html/tmpl/index", http.HandlerFunc(templateHomeHandler))
-	mux.Handle("/html/tmpl/topic", http.HandlerFunc(templateTopicHandler))
 	mux.Handle("/html/tmpl/hits", http.HandlerFunc(statsHitsHandler))
 
 	// this runs a server that can handle os signals for clean shutdown.
