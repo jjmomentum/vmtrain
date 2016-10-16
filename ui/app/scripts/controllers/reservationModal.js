@@ -12,12 +12,10 @@ angular.module('app')
   $rmCtrl.calendarEvent = calendarEvent;
 
   $rmCtrl.save = function () {
-    console.log('save!');
     $uibModalInstance.close();
   };
 
   $rmCtrl.cancel = function () {
-    console.log('cancel!');
     $uibModalInstance.dismiss('cancel');
   };
 });

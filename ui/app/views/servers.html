@@ -1,0 +1,19 @@
+<div ng-controller="ServersCtrl as vm">
+  <div class="row">
+    <div class="col-md-6">
+      <button class="btn btn-primary" ng-click="vm.openNewServerModal()">
+        <i class="glyphicon glyphicon-plus"></i>
+      </button>
+    </div>
+    <div class="col-md-6">
+      <h4>Servers</h4>
+    </div>
+  </div>
+  <table>
+    <th>Name</th>
+    <tr ng-repeat="server in vm.servers">
+      <td>{{ server.name }}</td>
+      <td><i class="glyphicon glyphicon-pencil" ng-click="vm.editServer(server)"></i></td>
+    </tr>
+  </table>
+</div>

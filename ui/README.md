@@ -10,7 +10,7 @@ Running `grunt test` will run the unit tests with karma.
 
 ## Build with Docker
 
-Run `docker build -t reservation-ui .` to build docker image
+Run `docker build -t reservation-ui --rm=true .` to build docker image
 
 Run `docker run -d -p 9000:9000 reservation-ui` to start UI container
 
