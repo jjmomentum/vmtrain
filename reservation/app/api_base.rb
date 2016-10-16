@@ -10,8 +10,8 @@ class ApiBase < Sinatra::Base
   # Actions that require something else can simply change it using the same call
   before { content_type 'application/json', :charset => 'utf-8' }
   before { headers 'Access-Control-Allow-Origin' => '*' }
-  before { headers 'Access-Control-Allow-Methods' => 'GET,POST,DELETE,OPTIONS' }
-  before { headers 'Access-Control-Allow-Headers' => 'Authorization' }
+  before { headers 'Access-Control-Allow-Methods' => 'GET,POST,PUT,DELETE,OPTIONS' }
+  before { headers 'Access-Control-Allow-Headers' => 'Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With' }
 
   set :raise_errors, false
   set :show_exceptions, false
