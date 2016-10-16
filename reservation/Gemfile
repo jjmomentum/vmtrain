@@ -1,0 +1,28 @@
+source 'http://rubygems.org'
+
+gem 'httparty'
+gem 'logging'
+gem 'multi_json'
+gem 'nokogiri'
+# gem 'rake'
+gem 'sinatra'
+gem 'roar'
+
+# Allow _method to be passed as a URL parameter for PUT and DELETE
+gem 'rack-methodoverride-with-params'
+
+# Used for loading JSON attributes into params hash
+gem 'rack-contrib'
+
+# Development
+group :development do
+  gem 'thin'
+  gem 'tux'
+end
+
+# Testing and Development
+group :test, :development do
+  gem 'ci_reporter_rspec'
+  gem 'pry'
+  gem 'rspec'
+end

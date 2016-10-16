@@ -1,0 +1,41 @@
+require 'httparty'
+require 'logging'
+require 'rspec/core/rake_task'
+
+include Logging.globally
+
+task :environment do
+  require File.join(File.dirname(__FILE__), 'app', 'init')
+end
+
+namespace :test do
+  desc 'Run User API tests'
+  RSpec::Core::RakeTask.new(:activiti_apis => :environment) do |t|
+    t.pattern = 'spec/app/activiti_api_spec.rb'
+    t.verbose = false
+  end
+
+  desc 'Run Server API tests'
+  RSpec::Core::RakeTask.new(:availability_zone_apis => :environment) do |t|
+    t.pattern = 'spec/app/availability_zone_api_spec.rb'
+    t.verbose = false
+  end
+
+  desc 'Run Reservation API tests'
+  RSpec::Core::RakeTask.new(:configuration_apis => :environment) do |t|
+    t.pattern = 'spec/app/configuration_api_spec.rb'
+    t.verbose = false
+  end
+
+  desc 'Run all tests'
+  task :all => [:environment] do
+    Rake::Task['test:user_apis'].invoke
+    Rake::Task['test:server_apis'].invoke
+    Rake::Task['test:reservation_apis'].invoke
+  end
+end
+
+namespace 'ci' do
+  require 'ci/reporter/rake/rspec'
+  task 'all' => ['ci:setup:rspec', 'test:all']
+end
