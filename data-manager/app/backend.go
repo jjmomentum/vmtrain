@@ -45,12 +45,13 @@ func (b Backend) GetServers() (*models.ServerList, int, error) {
 			fmt.Errorf("Failed to read blob data from service. Caused by: %v", err)
 	}
 
-	serverList := &models.ServerList{Servers: []models.Server{}}
+	serverList := []models.Server{}
 	for _, server := range blob.Content.Servers {
-		serverList.Servers = append(serverList.Servers, server)
+		serverList = append(serverList, server)
 	}
+	var servers models.ServerList = serverList
 
-	return serverList, http.StatusOK, nil
+	return &servers, http.StatusOK, nil
 }
 
 // SaveServer is a function to stored the data about a server.
@@ -82,12 +83,13 @@ func (b Backend) GetReservations() (*models.ReservationList, int, error) {
 			fmt.Errorf("Failed to read blob data from service. Caused by: %v", err)
 	}
 
-	reservationList := &models.ReservationList{Reservations: []models.Reservation{}}
+	reservationList := []models.Reservation{}
 	for _, reservation := range blob.Content.Reservations {
-		reservationList.Reservations = append(reservationList.Reservations, reservation)
+		reservationList = append(reservationList, reservation)
 	}
+	var reservations models.ReservationList = reservationList
 
-	return reservationList, http.StatusOK, nil
+	return &reservations, http.StatusOK, nil
 }
 
 // SaveReservation is a function to stored the data about a server.
@@ -119,12 +121,13 @@ func (b Backend) GetUsers() (*models.UserList, int, error) {
 			fmt.Errorf("Failed to read blob data from service. Caused by: %v", err)
 	}
 
-	userList := &models.UserList{Users: []models.User{}}
+	userList := []models.User{}
 	for _, user := range blob.Content.Users {
-		userList.Users = append(userList.Users, user)
+		userList = append(userList, user)
 	}
+	var users models.UserList = userList
 
-	return userList, http.StatusOK, nil
+	return &users, http.StatusOK, nil
 }
 
 // SaveUser is a function to stored the data about a user.
