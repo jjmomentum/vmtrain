@@ -14,11 +14,6 @@ RUN apt-get update -y \
 ENV HOME /home/app
 WORKDIR /home/app
 
-RUN useradd appuser -d /home/app -s /bin/bash -m
-
-RUN chown -R appuser:appuser /home/app
-USER appuser
-
 # Bundle app source
 COPY . /home/app
 

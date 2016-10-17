@@ -1,0 +1,8 @@
+.DS_Store
+.ruby-version
+.ruby-gemset
+log/*.log
+config/*.rb
+!config/version.rb
+spec/reports/*
+.buildpath

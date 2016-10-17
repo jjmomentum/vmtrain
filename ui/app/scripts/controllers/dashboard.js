@@ -14,7 +14,7 @@ angular.module('app')
     vm.viewDate = new Date();
     vm.isCellOpen = true;
 
-    vm.viewChangeClicked = function(nextView) {
+    vm.viewChangeClicked = function() {
       // disable changing view from month
       return false;
     };

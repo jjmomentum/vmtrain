@@ -35,13 +35,15 @@
               <span class="icon-bar"></span>
             </button>
 
-            <a class="navbar-brand" href="#/">Reservations</a>
+            <a class="navbar-brand" href="#/">Reservation</a>
           </div>
 
-          <div class="collapse navbar-collapse" id="js-navbar-collapse">
+          <div class="collapse navbar-collapse" id="js-navbar-collapse" ng-controller="NavCtrl">
 
             <ul class="nav navbar-nav">
-              <li class="active"><a href="#/">Dashboard</a></li>
+              <li ng-class="{ active: isActive('/')}"><a href="#/">Dashboard</a></li>
+              <li ng-class="{ active: isActive('/users')}"><a href="#/users">Users</a></li>
+              <li ng-class="{ active: isActive('/servers')}"><a href="#/servers">Servers</a></li>
             </ul>
           </div>
         </div>
@@ -87,8 +89,15 @@
 
         <!-- build:js({.tmp,app}) scripts/scripts.js -->
         <script src="scripts/app.js"></script>
+        <script src="scripts/controllers/nav.js"></script>
         <script src="scripts/controllers/dashboard.js"></script>
         <script src="scripts/controllers/reservationModal.js"></script>
+        <script src="scripts/controllers/users.js"></script>
+        <script src="scripts/services/users.js"></script>
+        <script src="scripts/controllers/userModal.js"></script>
+        <script src="scripts/controllers/servers.js"></script>
+        <script src="scripts/services/servers.js"></script>
+        <script src="scripts/controllers/serverModal.js"></script>
         <!-- endbuild -->
 </body>
 </html>
