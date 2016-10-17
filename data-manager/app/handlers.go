@@ -39,6 +39,7 @@ func CreateServer(w rest.ResponseWriter, r *rest.Request) {
 			if server.Name == "" {
 				rest.Error(w, "Missing 'name' in the request payload", http.StatusBadRequest)
 			} else {
+				server.UUID = uuid.New()
 				// Store in the blob service
 				savedServer, status, err := Cntxt.backend.SaveServer(server)
 				if err != nil {

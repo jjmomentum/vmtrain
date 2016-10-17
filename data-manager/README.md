@@ -1,70 +1,194 @@
-# q3-training-journal
-Sample microservice to manage multiple topic queues (a "cheap man's journal).
-The queues are FIFO.
+# data-manager
+Microservice to manage the persistance of lab data to a blob service.
 
 # Getting Started
-Until such time as we release this repository to the public, clone it in
-your GOPATH at src/github.com/vmtrain/data-manager, then build it:
+Include this repository in your GOPATH at src/github.com/vmtrain/data-manager, then build it:
+    cd data-manager
+    ./build.sh containerize
 
-For example:
+Then, you can start the microservice:
 
-    export GOPATH=${HOME}/go
-    cd ${HOME}/go
-    mkdir -p $GOPATH/src/github.com/tdhite
-    cd $GOPATH/src/github.com/tdhite
-    git clone http://gerrit.eng.vmware.com:8080/q3-training-journal
-    cd q3-training-journal
-    make
+	./build.sh start
 
-Note for Docker for Mac users:
+Note: The microservice will start on the default port of 6001
 
-If you get an error like: `standard_init_linux.go:175: exec user process caused "exec format error"` do the build like this:
-(See issue: https://github.com/docker/docker/issues/23865)
+To stop the microservice:
 
-    docker run -it -v "$PWD":/go/src/github.com/vmtrain/data-manager -w /go/src/github.com/vmtrain/data-manager golang:1.6 make q3-training-journal
-    docker build -t q3-training-journal --rm=true .
+	./build.sh stop
 
 ## The API
-Run the service, e.g.:
 
-    docker run -d -p 8080:8080 q3-training-journal /q3-training-journal -l 8080 -t . -apiHost localhost
+**Create a Reservation**
 
-You should then see the container running when you do a ```docker ps```.  If not, run a ```docker ps -a``` and ```docker logs <container-id>``` to troubleshoot.
+`POST /reservations`
 
-Assuming that provided you a Docker generated container address as
-172.17.0.1, the REST API exists at http://172.17.0.1:8080/api/topics and paths
-further thereuafter pursuant to the pattern:
-
-- GET /api/topics:
-Returns all topics currently held by the microservice.
-
-- GET /api/topic/:topic :
-Returns the next message off the named queue, where :topic is the name.
-Note the message should be base64 encoded for any nontrivial payload.
-
-- POST /api/topic/:topic :
-Given a JSON body similar to:
-Note the message should be base64 encoded for any nontrivial payload.
+Request body:
 
 ```
-    {
-      "id": 0,
-      "message": "dGVzdGluZw0K"
-    }
+{
+  "name": "my reservation",
+  "start_date": "2016-01-01T06:00:00.000Z",
+  "end_date": "2099-12-31T00:00:00.000Z",
+  "server_name": "server1"
+}
 ```
 
-creates a new queue message on the queue name by the topic: path parameter.
+Response codes:
 
-## The HTML Interface
-To reach the HTML interface (given the same sample as above), browse to:
-http://172.17.0.1/html/tmpl/index and the bulk  of the HTML paths are
-available from that page or others as appropriate given traversal of the 'site.'
+HTTP code   | Description
+----------- | -------------
+200         | Indicates the reservation was created.
+400         | Indicates the reservation was not created due to invalid payload.
+500         | Indicates request was unsucessful due to an unexpected condition.
 
-Another HTML page not linked by the inde page is /html/tmpl/hits, which provides
-a view of hit counts on the various URLs involved in the service (API and HTML).
+Success response body:
+
+```
+{
+  "uuid": "dbbeb1e7-2847-4886-b5cb-9690ad29e16c",
+  "name": "my reservation",
+  "start_date": "2016-01-01T06:00:00.000Z",
+  "end_date": "2099-12-31T00:00:00.000Z",
+  "server_name": "server1",
+  "approved": false
+}
+```
+**Get a List of Reservations**
+
+`GET /reservations`
+
+Response codes:
+
+HTTP code | Description
+--------- | -------------
+200       | Indicates request was successful and the reservations are returned.
+500       | Indicates request was unsucessful due to an unexpected condition.
+
+
+Success response body:
+
+```
+[
+  {
+    "uuid": "b8e70070-a2d0-4458-965a-67d29a632090",
+    "name": "my reservation",
+    "start_date": "2016-01-01T06:00:00.000Z",
+    "end_date": "2099-12-31T00:00:00.000Z",
+    "server_name": "server1",
+    "approved": false
+  },
+  ...
+]
+```
+
+**Create a Server**
+
+`POST /servers`
+
+Request body:
+
+```
+{
+  "name": "server1"
+}
+```
+
+Response codes:
+
+HTTP code   | Description
+----------- | -------------
+200         | Indicates the server was created.
+400         | Indicates the server was not created due to invalid payload.
+500         | Indicates request was unsucessful due to an unexpected condition.
+
+Success response body:
+
+```
+{
+  "uuid": "c79fe768-d1a3-4ff8-bfdc-f8e48ea39837",
+  "name": "server1"
+}
+```
+
+**Get a List of Servers**
+
+`GET /servers`
+
+Response codes:
+
+HTTP code | Description
+--------- | -------------
+200       | Indicates request was successful and the servers are returned.
+500       | Indicates request was unsucessful due to an unexpected condition.
+
+
+Success response body:
+
+```
+[
+  {
+    "uuid": "c79fe768-d1a3-4ff8-bfdc-f8e48ea39837",
+    "name": "server1"
+  },
+  ...
+]
+```
+
+**Create a User**
+
+`POST /users`
+
+Request body:
+
+```
+{
+  "name": "user1"
+}
+```
+
+Response codes:
+
+HTTP code   | Description
+----------- | -------------
+200         | Indicates the user was created.
+400         | Indicates the user was not created due to invalid payload.
+500         | Indicates request was unsucessful due to an unexpected condition.
+
+Success response body:
+
+```
+{
+  "uuid": "e70d2787-ea9f-4902-acf7-f993554b80b4",
+  "name": "user1"
+}
+```
+
+**Get a List of Users**
+
+`GET /users`
+
+Response codes:
+
+HTTP code | Description
+--------- | -------------
+200       | Indicates request was successful and the users are returned.
+500       | Indicates request was unsucessful due to an unexpected condition.
+
+
+Success response body:
+
+```
+[
+  {
+    "uuid": "e70d2787-ea9f-4902-acf7-f993554b80b4",
+    "name": "user1"
+  },
+  ...
+]
+```
 
 # Dependencies
-This service requires a valid Go language environment and gnu make.
+This service requires a valid Go language environment.
 
 # License and Author
 Copyright: Copyright (c) 2015 VMware, Inc. All Rights Reserved
