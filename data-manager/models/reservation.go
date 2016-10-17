@@ -42,3 +42,8 @@ func (r *Reservation) ToJSON() (string, error) {
 	}
 	return string(b), nil
 }
+
+// ReservationList is a list of Reservation structs
+type ReservationList struct {
+	Reservations []Reservation `json:"reservations"`
+}

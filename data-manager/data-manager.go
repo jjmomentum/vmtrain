@@ -73,13 +73,14 @@ func realMain() int {
 	server := &graceful.Server{
 		Timeout: 10 * time.Second,
 		Server: &http.Server{
-			Addr:    ":" + strconv.Itoa(app.Cntxt.ListenPort),
+			Addr:    "localhost:" + strconv.Itoa(app.Cntxt.ListenPort),
 			Handler: mux,
 		},
 		ListenLimit: 1024,
 	}
 
 	exitcode := 0
+	log.Printf("Starting server at %s.. \n", server.Addr)
 	err = server.ListenAndServe()
 	if err != nil {
 		log.Println("Shutdown caused by:" + err.Error())

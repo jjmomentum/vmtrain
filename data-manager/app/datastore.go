@@ -12,5 +12,5 @@ import "github.com/vmtrain/data-manager/models"
 // Datastore is an interface to abstract the reading and writing of data.
 type Datastore interface {
 	Write(b *models.Blob) error
-	Read(b *models.Blob) error
+	Read(id int) (*models.Blob, error)
 }

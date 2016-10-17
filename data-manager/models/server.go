@@ -33,3 +33,8 @@ func (s *Server) ToJSON() (string, error) {
 	}
 	return string(b), nil
 }
+
+// ServerList is a list of Server structs
+type ServerList struct {
+	Servers []Server `json:"servers"`
+}

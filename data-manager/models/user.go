@@ -34,3 +34,8 @@ func (u *User) ToJSON() (string, error) {
 	}
 	return string(b), nil
 }
+
+// UserList is a list of User structs
+type UserList struct {
+	Users []User `json:"users"`
+}

@@ -20,13 +20,13 @@ func NewMockDatastore(blobs map[int]*models.Blob) MockDatastore {
 }
 
 // Read is a function that lookps up data in memory.
-func (m MockDatastore) Read(b *models.Blob) error {
-	b, ok := m.blobMap[b.ID]
+func (m MockDatastore) Read(id int) (*models.Blob, error) {
+	blob, ok := m.blobMap[id]
 	if !ok {
-		return fmt.Errorf("Blob with ID: %d not found", b.ID)
+		return nil, fmt.Errorf("Blob with ID: %d not found", id)
 	}
 
-	return nil
+	return blob, nil
 
 }
 

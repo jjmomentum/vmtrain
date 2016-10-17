@@ -32,7 +32,7 @@ func CreateServer(w rest.ResponseWriter, r *rest.Request) {
 		log.Printf("The body received is %s", string(body))
 
 		// Unmarshal and validate JSON
-		err = json.Unmarshal(body, server)
+		err = json.Unmarshal(body, &server)
 		if err != nil {
 			rest.Error(w, err.Error(), http.StatusBadRequest)
 		} else {
@@ -74,7 +74,7 @@ func CreateReservation(w rest.ResponseWriter, r *rest.Request) {
 		log.Printf("The body received is %s", string(body))
 
 		// Unmarshal and validate JSON
-		err = json.Unmarshal(body, reservation)
+		err = json.Unmarshal(body, &reservation)
 		if err != nil {
 			rest.Error(w, err.Error(), http.StatusBadRequest)
 		} else {
@@ -117,7 +117,7 @@ func CreateUser(w rest.ResponseWriter, r *rest.Request) {
 		log.Printf("The body received is %s", string(body))
 
 		// Unmarshal and validate JSON
-		err = json.Unmarshal(body, user)
+		err = json.Unmarshal(body, &user)
 		if err != nil {
 			rest.Error(w, err.Error(), http.StatusBadRequest)
 		} else {

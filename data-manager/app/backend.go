@@ -9,6 +9,7 @@ package app
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 
 	"github.com/vmtrain/data-manager/models"
@@ -36,36 +37,36 @@ func NewBackend(ds Datastore) Backend {
 }
 
 // GetServers is a function to look up data about multiple servers.
-func (b Backend) GetServers() (map[string]models.Server, int, error) {
-	var (
-		err error
-	)
-
-	blob := models.Blob{
-		ID: blobId,
-	}
-
-	err = b.datastore.Read(&blob)
+func (b Backend) GetServers() (*models.ServerList, int, error) {
+	blob, err := b.datastore.Read(blobId)
 	if err != nil {
 		return nil,
 			http.StatusInternalServerError,
 			fmt.Errorf("Failed to read blob data from service. Caused by: %v", err)
 	}
 
-	return blob.Content.Servers, http.StatusOK, nil
+	serverList := &models.ServerList{Servers: []models.Server{}}
+	for _, server := range blob.Content.Servers {
+		serverList.Servers = append(serverList.Servers, server)
+	}
+
+	return serverList, http.StatusOK, nil
 }
 
 // SaveServer is a function to stored the data about a server.
 func (b Backend) SaveServer(server models.Server) (*models.Server, int, error) {
 	// Read data from the blob service
-	blob := models.Blob{
-		ID: blobId,
+	blob, err := b.datastore.Read(blobId)
+	if err != nil {
+		return nil, http.StatusInternalServerError, err
 	}
+	log.Printf("The blob found was %+v", blob)
+
 	blob.Content.Lock()
 	blob.Content.Servers[server.Name] = server
 	blob.Content.Unlock()
 
-	err := b.datastore.Write(&blob)
+	err = b.datastore.Write(blob)
 	if err != nil {
 		return nil, http.StatusInternalServerError, err
 	}
@@ -73,36 +74,36 @@ func (b Backend) SaveServer(server models.Server) (*models.Server, int, error) {
 }
 
 // GetReservations is a function to look up data about multiple servers.
-func (b Backend) GetReservations() (map[string]models.Reservation, int, error) {
-	var (
-		err error
-	)
-
-	blob := models.Blob{
-		ID: blobId,
-	}
-
-	err = b.datastore.Read(&blob)
+func (b Backend) GetReservations() (*models.ReservationList, int, error) {
+	blob, err := b.datastore.Read(blobId)
 	if err != nil {
 		return nil,
 			http.StatusInternalServerError,
 			fmt.Errorf("Failed to read blob data from service. Caused by: %v", err)
 	}
 
-	return blob.Content.Reservations, http.StatusOK, nil
+	reservationList := &models.ReservationList{Reservations: []models.Reservation{}}
+	for _, reservation := range blob.Content.Reservations {
+		reservationList.Reservations = append(reservationList.Reservations, reservation)
+	}
+
+	return reservationList, http.StatusOK, nil
 }
 
 // SaveReservation is a function to stored the data about a server.
 func (b Backend) SaveReservation(reservation models.Reservation) (*models.Reservation, int, error) {
 	// Read data from the blob service
-	blob := models.Blob{
-		ID: blobId,
+	blob, err := b.datastore.Read(blobId)
+	if err != nil {
+		return nil, http.StatusInternalServerError, err
 	}
+	log.Printf("The blob found was %+v", blob)
+
 	blob.Content.Lock()
 	blob.Content.Reservations[reservation.UUID] = reservation
 	blob.Content.Unlock()
 
-	err := b.datastore.Write(&blob)
+	err = b.datastore.Write(blob)
 	if err != nil {
 		return nil, http.StatusInternalServerError, err
 	}
@@ -110,36 +111,35 @@ func (b Backend) SaveReservation(reservation models.Reservation) (*models.Reserv
 }
 
 // GetUsers is a function to look up data about multiple users.
-func (b Backend) GetUsers() (map[string]models.User, int, error) {
-	var (
-		err error
-	)
-
-	blob := models.Blob{
-		ID: blobId,
-	}
-
-	err = b.datastore.Read(&blob)
+func (b Backend) GetUsers() (*models.UserList, int, error) {
+	blob, err := b.datastore.Read(blobId)
 	if err != nil {
 		return nil,
 			http.StatusInternalServerError,
 			fmt.Errorf("Failed to read blob data from service. Caused by: %v", err)
 	}
 
-	return blob.Content.Users, http.StatusOK, nil
+	userList := &models.UserList{Users: []models.User{}}
+	for _, user := range blob.Content.Users {
+		userList.Users = append(userList.Users, user)
+	}
+
+	return userList, http.StatusOK, nil
 }
 
 // SaveUser is a function to stored the data about a user.
 func (b Backend) SaveUser(user models.User) (*models.User, int, error) {
-	// Read data from the blob service
-	blob := models.Blob{
-		ID: blobId,
+	blob, err := b.datastore.Read(blobId)
+	if err != nil {
+		return nil, http.StatusInternalServerError, err
 	}
+	log.Printf("The blob found was %+v", blob)
+
 	blob.Content.Lock()
 	blob.Content.Users[user.UUID] = user
 	blob.Content.Unlock()
 
-	err := b.datastore.Write(&blob)
+	err = b.datastore.Write(blob)
 	if err != nil {
 		return nil, http.StatusInternalServerError, err
 	}
