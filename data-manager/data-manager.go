@@ -73,7 +73,7 @@ func realMain() int {
 	server := &graceful.Server{
 		Timeout: 10 * time.Second,
 		Server: &http.Server{
-			Addr:    "localhost:" + strconv.Itoa(app.Cntxt.ListenPort),
+			Addr:    "0.0.0.0:" + strconv.Itoa(app.Cntxt.ListenPort),
 			Handler: mux,
 		},
 		ListenLimit: 1024,

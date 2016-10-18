@@ -295,10 +295,17 @@ startService(){
 }
 
 stopService(){
-	killall data-manager
-	if [[ $? != 0 ]]; then
-		echo "error stopping $MS_NAME microservice"
+	var1=$(docker ps -f ancestor=data-manager:$VERSION | awk '{print $1}')
+	var1=$(echo ${var1#CONTAINER})
+	if [[ ! $var1 ]] ; then
+		echo "data-manager microservice is not running"
+	else
+		docker stop $var1
+		if [[ $? != 0 ]]; then
+			echo "error stopping $MS_NAME microservice"
+		fi
 	fi
+	
 }
 
 while getopts ":vc" opt; do
