@@ -1,11 +1,21 @@
-# go-reminders minimal container definition
-
-# Start from scratch
-FROM scratch
+# Start from Debian image with the latest version of Go installed
+# and a workspace (GOPATH) configured at /go.
+FROM golang
 MAINTAINER Luis M. Valerio <lvaleriocasti@vmware.com>
 
-# Add the microservice
-ADD data-manager /data-manager
+# Copy the local package files to the container's workspace.
+COPY . /go/src/github.com/vmtrain/data-manager
 
-# Add the content (html and templates)
-ADD html /html
+# Get dependencies.
+RUN go get github.com/ant0ine/go-json-rest/rest
+RUN go get github.com/stretchr/graceful
+RUN go get github.com/pborman/uuid
+
+# Build the microservice inside the container.
+RUN go install github.com/vmtrain/data-manager
+
+# Run the microservice command by default when the container starts
+ENTRYPOINT /go/bin/data-manager -l 6001 -t .
+
+# Document that the service listens on port 6001
+EXPOSE 6001

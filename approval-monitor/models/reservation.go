@@ -22,7 +22,7 @@ type Reservation struct {
 
 	ServerName string `json:"server_name"`
 
-	Status string `json:"status"`
+	Approved bool `json:"approved"`
 }
 
 // FromJSON populates Reservation from JSON data.

@@ -151,7 +151,9 @@ function buildApps() {
     display "================================================================================"
     echo "Building Packages"
     display "================================================================================"
-
+	echo "Getting Go dependencies.."
+	go get
+	echo "Done"
 	for cmd in $PKG_LIST; do
 	    display "================================================================================"
 	    display "BUILDING $cmd PACKAGE"
@@ -270,8 +272,7 @@ makeDocker() {
 	fi
 	if [ "$HOST_OS" == "darwin" ]; then
 		eval $(docker-machine env dev-dev)
-		#docker run -it -v "$PWD":/go/src/github.com/vmtrain/data-manager -w /go/src/github.com/vmtrain/data-manager golang:1.6 ./build.sh data-manager
-    	docker build -t $1 --rm=true .
+		docker build -t $1 --rm=true .
 	else
 		docker build -t $1 --rm=true .
 	    if [ $? -ne 0 ]; then 
@@ -287,7 +288,7 @@ dataManager(){
 }
 
 startService(){
-	docker run -d -p $MS_PORT:$MS_PORT data-manager:$VERSION /data-manager -l $MS_PORT -t .
+	docker run -d -p $MS_PORT:$MS_PORT data-manager:$VERSION
 	if [ $? -ne 0 ]; then 
         echo "error running $MS_NAME microservice"
         exit 1
@@ -295,10 +296,17 @@ startService(){
 }
 
 stopService(){
-	killall data-manager
-	if [[ $? != 0 ]]; then
-		echo "error stopping $MS_NAME microservice"
+	var1=$(docker ps -f ancestor=data-manager:$VERSION | awk '{print $1}')
+	var1=$(echo ${var1#CONTAINER})
+	if [[ ! $var1 ]] ; then
+		echo "data-manager microservice is not running"
+	else
+		docker stop $var1
+		if [[ $? != 0 ]]; then
+			echo "error stopping $MS_NAME microservice"
+		fi
 	fi
+	
 }
 
 while getopts ":vc" opt; do

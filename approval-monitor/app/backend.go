@@ -64,7 +64,7 @@ func (b Backend) SaveServer(server models.Server) (*models.Server, int, error) {
 	log.Printf("The blob found was %+v", blob)
 
 	blob.Content.Lock()
-	blob.Content.Servers[server.Name] = server
+	blob.Content.Servers[server.UUID] = server
 	blob.Content.Unlock()
 
 	err = b.datastore.Write(blob)

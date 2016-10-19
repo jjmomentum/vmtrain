@@ -13,6 +13,7 @@ import (
 
 // Server is the struct to hold server data about the lab environment
 type Server struct {
+	UUID string `json:"uuid"`
 	Name string `json:"name"`
 }
 
