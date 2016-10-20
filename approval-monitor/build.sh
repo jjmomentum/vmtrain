@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# This is a Cross-Compiling build script for the data manager microservice
+# This is a Cross-Compiling build script for the approval monitor microservice
 # The build script generates linux binaries
 # Usage:
 # build.sh [-v] [command] [targetOS]
@@ -23,7 +23,7 @@ case "$OSTYPE" in
 		;;
 esac
 
-MS_NAME="data-manager"
+MS_NAME="approval-monitor"
 MS_PORT=6001
 PKG_LIST="models stats template app ."
 REPO_PATH="${GOPATH}/src/github.com/vmtrain"
@@ -282,13 +282,8 @@ makeDocker() {
 	fi
 }
 
-dataManager(){
-	CGO_ENABLED=0 
-	go build -a --installsuffix cgo .
-}
-
 startService(){
-	docker run -d -p $MS_PORT:$MS_PORT data-manager:$VERSION
+	docker run -d -p $MS_PORT:$MS_PORT $MS_NAME:$VERSION
 	if [ $? -ne 0 ]; then 
         echo "error running $MS_NAME microservice"
         exit 1
@@ -296,10 +291,10 @@ startService(){
 }
 
 stopService(){
-	var1=$(docker ps -f ancestor=data-manager:$VERSION | awk '{print $1}')
+	var1=$(docker ps -f ancestor=$MS_NAME:$VERSION | awk '{print $1}')
 	var1=$(echo ${var1#CONTAINER})
 	if [[ ! $var1 ]] ; then
-		echo "data-manager microservice is not running"
+		echo "$MS_NAME microservice is not running"
 	else
 		docker stop $var1
 		if [[ $? != 0 ]]; then
@@ -378,18 +373,14 @@ case "$COMMAND" in
 		stopService
 		echo "Done"
 		;;
-	data-manager)
-		dataManager
-		echo "Done"
-		;;
     containerize)
         echo "Containerizing Apps"
         TARGET_OS='linux'
         SetGoEnvironment
         cleanApps
         buildApps
-        makeDocker data-manager:$VERSION
-        echo created container data-manager:$VERSION
+        makeDocker $MS_NAME:$VERSION
+        echo created container $MS_NAME:$VERSION
         echo "Done"
         ;;
 	

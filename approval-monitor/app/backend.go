@@ -12,7 +12,7 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/vmtrain/data-manager/models"
+	"github.com/vmtrain/approval-monitor/models"
 )
 
 // Constants used to map the queries to tables and columns found in the

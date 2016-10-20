@@ -7,7 +7,7 @@
 //
 package app
 
-import "github.com/vmtrain/data-manager/models"
+import "github.com/vmtrain/approval-monitor/models"
 
 // Datastore is an interface to abstract the reading and writing of data.
 type Datastore interface {

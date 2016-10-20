@@ -12,7 +12,7 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/vmtrain/data-manager/stats"
+	"github.com/vmtrain/approval-monitor/stats"
 )
 
 // Template is a client to get topics

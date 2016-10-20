@@ -3,7 +3,7 @@ package app
 import (
 	"fmt"
 
-	"github.com/vmtrain/data-manager/models"
+	"github.com/vmtrain/approval-monitor/models"
 )
 
 // MockDatastore is a struct to simulate the datastore of the API server during test.

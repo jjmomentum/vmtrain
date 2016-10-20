@@ -16,7 +16,7 @@ import (
 
 	"github.com/ant0ine/go-json-rest/rest"
 	"github.com/pborman/uuid"
-	"github.com/vmtrain/data-manager/models"
+	"github.com/vmtrain/approval-monitor/models"
 )
 
 // CreateServer creates a server

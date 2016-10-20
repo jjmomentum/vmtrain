@@ -8,8 +8,8 @@
 package app
 
 import (
-	"github.com/vmtrain/data-manager/models"
-	"github.com/vmtrain/data-manager/stats"
+	"github.com/vmtrain/approval-monitor/models"
+	"github.com/vmtrain/approval-monitor/stats"
 )
 
 // Context is a struct to hold global application context variables.

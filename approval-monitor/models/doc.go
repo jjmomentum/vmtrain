@@ -7,7 +7,7 @@
 //
 
 /*
-Package datamanager managers the lab data for the lab reservation application.
+Package approval monitor managers approvals for the lab.
 */
 
 package models
