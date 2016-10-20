@@ -6,16 +6,25 @@
 package main
 
 import (
+	"bytes"
+	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
 	"os"
 	"strconv"
 	"time"
 
-	"github.com/ant0ine/go-json-rest/rest"
-	"github.com/stretchr/graceful"
 	"github.com/vmtrain/approval-monitor/app"
+	"github.com/vmtrain/approval-monitor/models"
 	"github.com/vmtrain/approval-monitor/template"
+)
+
+const (
+	getApprovalsURL      = "http://approval.vmwaredevops.appspot.com/api/v1/approvables?approved=true&teamID=4"
+	updateReservationURL = "http://localhost:6001/api/reservations"
+	deleteApprovalURL    = "http://approval.vmwaredevops.appspot.com/api/v1/approvables/"
+	pollIntervalSec      = 60
 )
 
 // Http handler functions for dealing with various site requests for
@@ -41,53 +50,99 @@ func statsHitsHandler(w http.ResponseWriter, r *http.Request) {
 // Called by main, which is just a wrapper for this function. The reason
 // is main can't directly pass back a return code to the OS.
 func realMain() int {
-	// setup JSON request handlers
-	api := rest.NewApi()
-	api.Use(rest.DefaultDevStack...)
+	//	// setup JSON request handlers
+	//	api := rest.NewApi()
+	//	api.Use(rest.DefaultDevStack...)
 
-	router, err := rest.MakeRouter(
-		// stats
-		rest.Get("/stats/hits", app.Cntxt.Stats.Get),
-		// lab pool data
-		rest.Post("/api/reservations", app.CreateReservation),
-		rest.Get("/api/reservations", app.ShowReservationList),
-		rest.Post("/api/servers", app.CreateServer),
-		rest.Get("/api/servers", app.ShowServerList),
-		rest.Post("/api/users", app.CreateUser),
-		rest.Get("/api/users", app.ShowUserList),
-	)
-	if err != nil {
-		log.Fatal(err)
+	//	router, err := rest.MakeRouter(
+	//		// stats
+	//		rest.Get("/stats/hits", app.Cntxt.Stats.Get),
+	//		// lab pool data
+	//		rest.Post("/api/reservations", app.CreateReservation),
+	//		rest.Get("/api/reservations", app.ShowReservationList),
+	//		rest.Post("/api/servers", app.CreateServer),
+	//		rest.Get("/api/servers", app.ShowServerList),
+	//		rest.Post("/api/users", app.CreateUser),
+	//		rest.Get("/api/users", app.ShowUserList),
+	//	)
+	//	if err != nil {
+	//		log.Fatal(err)
+	//	}
+	//	api.SetApp(router)
+
+	//	// setup the html page request handlers and mux it all
+	//	mux := http.NewServeMux()
+	//	mux.Handle("/api/", api.MakeHandler())
+	//	mux.Handle("/stats/", api.MakeHandler())
+	//	mux.Handle("/html/skeleton/", http.FileServer(http.Dir(app.Cntxt.ContentRoot)))
+	//	mux.Handle("/html/tmpl/index", http.HandlerFunc(templateHomeHandler))
+	//	mux.Handle("/html/tmpl/hits", http.HandlerFunc(statsHitsHandler))
+
+	//	// this runs a server that can handle os signals for clean shutdown.
+	//	server := &graceful.Server{
+	//		Timeout: 10 * time.Second,
+	//		Server: &http.Server{
+	//			Addr:    "0.0.0.0:" + strconv.Itoa(app.Cntxt.ListenPort),
+	//			Handler: mux,
+	//		},
+	//		ListenLimit: 1024,
+	//	}
+
+	//	exitcode := 0
+	//	log.Printf("Starting server at %s.. \n", server.Addr)
+	//	err = server.ListenAndServe()
+	//	if err != nil {
+	//		log.Println("Shutdown caused by:" + err.Error())
+	//		exitcode = 1
+	//	}
+
+	//	return exitcode
+
+	for {
+		var approvals models.ApprovalList
+		err := app.MakeRequest(getApprovalsURL, http.MethodGet, &approvals, nil)
+		if err != nil {
+			log.Println("Shutdown caused by:" + err.Error())
+			return 1
+		}
+
+		for _, approval := range approvals {
+			if approval.Approved {
+				var reservationResponse models.Reservation
+				reservationPayload := models.Reservation{}
+				// Unmarshal JSON
+				b, err := json.Marshal(reservationPayload)
+				if err != nil {
+					log.Println("Shutdown caused by:" + err.Error())
+					return 1
+				}
+
+				err = app.MakeRequest(
+					fmt.Sprintf("%s/%s", updateReservationURL, approval.Description),
+					http.MethodPut,
+					&reservationResponse,
+					bytes.NewReader(b),
+				)
+				if err != nil {
+					log.Println("Shutdown caused by:" + err.Error())
+					return 1
+				}
+
+				err = app.MakeRequest(
+					fmt.Sprintf("%s%s", deleteApprovalURL, approval.ID),
+					http.MethodDelete,
+					nil,
+					nil,
+				)
+				if err != nil {
+					log.Println("Shutdown caused by:" + err.Error())
+					return 1
+				}
+			}
+		}
+
+		time.Sleep(time.Duration(uint(time.Second) * pollIntervalSec))
 	}
-	api.SetApp(router)
-
-	// setup the html page request handlers and mux it all
-	mux := http.NewServeMux()
-	mux.Handle("/api/", api.MakeHandler())
-	mux.Handle("/stats/", api.MakeHandler())
-	mux.Handle("/html/skeleton/", http.FileServer(http.Dir(app.Cntxt.ContentRoot)))
-	mux.Handle("/html/tmpl/index", http.HandlerFunc(templateHomeHandler))
-	mux.Handle("/html/tmpl/hits", http.HandlerFunc(statsHitsHandler))
-
-	// this runs a server that can handle os signals for clean shutdown.
-	server := &graceful.Server{
-		Timeout: 10 * time.Second,
-		Server: &http.Server{
-			Addr:    "0.0.0.0:" + strconv.Itoa(app.Cntxt.ListenPort),
-			Handler: mux,
-		},
-		ListenLimit: 1024,
-	}
-
-	exitcode := 0
-	log.Printf("Starting server at %s.. \n", server.Addr)
-	err = server.ListenAndServe()
-	if err != nil {
-		log.Println("Shutdown caused by:" + err.Error())
-		exitcode = 1
-	}
-
-	return exitcode
 }
 
 func main() {
