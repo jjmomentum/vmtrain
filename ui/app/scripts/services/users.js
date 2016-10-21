@@ -29,19 +29,19 @@ angular.module('app')
     };
 
     service.create = function (user) {
-      return $http.post(getUrl(), user).then(function successCallback(response) {
+      return $http.post(getUrl(), user).then(function successCallback() {
         $route.reload();
       });
     };
 
     service.update = function (userId, user) {
-      return $http.put(getUrlForId(userId), user).then(function successCallback(response) {
+      return $http.put(getUrlForId(userId), user).then(function successCallback() {
         $route.reload();
       });
     };
 
     service.destroy = function (userId) {
-      return $http.delete(getUrlForId(userId)).then(function successCallback(response) {
+      return $http.delete(getUrlForId(userId)).then(function successCallback() {
         $route.reload();
       });
     };

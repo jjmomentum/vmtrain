@@ -29,19 +29,19 @@ angular.module('app')
     };
 
     service.create = function (reservation) {
-      return $http.post(getUrl(), reservation).then(function successCallback(response) {
+      return $http.post(getUrl(), reservation).then(function successCallback() {
         $route.reload();
       });
     };
 
     service.update = function (reservationId, reservation) {
-      return $http.put(getUrlForId(reservationId), reservation).then(function successCallback(response) {
+      return $http.put(getUrlForId(reservationId), reservation).then(function successCallback() {
         $route.reload();
       });
     };
 
     service.destroy = function (reservationId) {
-      return $http.delete(getUrlForId(reservationId)).then(function successCallback(response) {
+      return $http.delete(getUrlForId(reservationId)).then(function successCallback() {
         $route.reload();
       });
     };

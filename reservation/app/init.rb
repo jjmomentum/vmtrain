@@ -23,8 +23,7 @@ end
 lib_files = {
   config: Dir[File.join(File.dirname(__FILE__), '..', 'config', '*.rb')],
   app: Dir[File.join(File.dirname(__FILE__), '..', 'app', '*.rb')],
-  models: Dir[File.join(File.dirname(__FILE__), '..', 'app', 'models', '*.rb')],
-  representers: Dir[File.join(File.dirname(__FILE__), '..', 'app', 'representers', '*.rb')]
+  models: Dir[File.join(File.dirname(__FILE__), '..', 'app', 'lib', 'models', '*.rb')],
 }
 
 #
@@ -40,8 +39,7 @@ require File.join(File.dirname(__FILE__), '..', 'app', 'api_base')
 # Bring in all modules, apps, validators, models and representers
 [
   lib_files[:app],
-  lib_files[:models],
-  lib_files[:representers]
+  lib_files[:models]
 ].each do |lib_list|
   lib_list.each{|lib| require lib}
 end

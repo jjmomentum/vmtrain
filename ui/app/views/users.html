@@ -9,10 +9,12 @@
       <h4>Users</h4>
     </div>
   </div>
-  <table>
+  <table class="table table-striped">
     <th>Name</th>
+    <th>Actions</th>
     <tr ng-repeat="user in vm.users">
       <td>{{ user.name }}</td>
+      <td><button class="btn btn-danger" ng-click="vm.deleteUser(user.uuid)">Delete</button>
     </tr>
   </table>
 </div>

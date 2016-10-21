@@ -9,10 +9,12 @@
       <h4>Servers</h4>
     </div>
   </div>
-  <table>
+  <table class="table table-striped">
     <th>Name</th>
+    <th>Actions</th>
     <tr ng-repeat="server in vm.servers">
       <td>{{ server.name }}</td>
+      <td><button class="btn btn-danger" ng-click="vm.deleteServer(server.uuid)">Delete</button>
     </tr>
   </table>
 </div>

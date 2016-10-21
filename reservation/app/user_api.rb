@@ -44,7 +44,10 @@ class UserApi < ApiBase
   delete '/:id' do
     logger.info("DELETE /users/#{params[:id]}")
     logger.debug('Deleting user with lab data service...')
-    # DELETE user with lab data service
+
+    delete_message = HTTParty.delete("http://localhost:6001/api/users/#{params[:id]}")
+    response = { 'message' => delete_message }
+
     logger.debug("Successfully deleted user '#{params[:id]}' - RETURN: #{OK}")
     [OK, response.to_json]
   end

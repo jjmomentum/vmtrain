@@ -27,4 +27,8 @@ angular.module('app')
         }
       });
     };
+
+    vm.deleteServer = function(serverId) {
+      ServersModel.destroy(serverId);
+    };
   });
