@@ -10,4 +10,4 @@ COPY . /go/src/github.com/vmtrain/approval-monitor
 RUN go install github.com/vmtrain/approval-monitor
 
 # Run the microservice command by default when the container starts
-ENTRYPOINT /go/bin/approval-monitor -data-manager=http://localhost:6001 -poll-interval=10
+ENTRYPOINT /go/bin/approval-monitor -data-manager=http://0.0.0.0:6001 -poll-interval=10
