@@ -42,7 +42,7 @@ func CreateServer(w rest.ResponseWriter, r *rest.Request) {
 			} else {
 				server.UUID = uuid.New()
 				// Store in the blob service
-				savedServer, status, err := Cntxt.backend.SaveServer(server)
+				savedServer, status, err := Cntxt.Backend.SaveServer(server)
 				if err != nil {
 					rest.Error(w, err.Error(), status)
 				} else {
@@ -55,7 +55,7 @@ func CreateServer(w rest.ResponseWriter, r *rest.Request) {
 
 // ShowServerList displays a list of servers
 func ShowServerList(w rest.ResponseWriter, r *rest.Request) {
-	serverList, status, err := Cntxt.backend.GetServers()
+	serverList, status, err := Cntxt.Backend.GetServers()
 	if err != nil {
 		rest.Error(w, err.Error(), status)
 	} else {
@@ -68,7 +68,7 @@ func DeleteServer(w rest.ResponseWriter, r *rest.Request) {
 	id := r.PathParam("uuid")
 
 	// Store in the blob service
-	status, err := Cntxt.backend.DeleteServer(id)
+	status, err := Cntxt.Backend.DeleteServer(id)
 	if err != nil {
 		rest.Error(w, err.Error(), status)
 	} else {
@@ -99,7 +99,7 @@ func CreateReservation(w rest.ResponseWriter, r *rest.Request) {
 			}
 
 			// Store in the blob service
-			savedReservation, status, err := Cntxt.backend.SaveReservation(reservation)
+			savedReservation, status, err := Cntxt.Backend.SaveReservation(reservation)
 			if err != nil {
 				rest.Error(w, err.Error(), status)
 			} else {
@@ -113,7 +113,7 @@ func CreateReservation(w rest.ResponseWriter, r *rest.Request) {
 // UpdateReservation creates a reservation
 func UpdateReservation(w rest.ResponseWriter, r *rest.Request) {
 	id := r.PathParam("uuid")
-	_, status, err := Cntxt.backend.GetReservation(id)
+	_, status, err := Cntxt.Backend.GetReservation(id)
 	if err != nil {
 		rest.Error(w, err.Error(), status)
 	} else {
@@ -135,7 +135,7 @@ func UpdateReservation(w rest.ResponseWriter, r *rest.Request) {
 				// Override value to ensure data integrity
 				reservation.UUID = id
 				// Store in the blob service
-				savedReservation, status, err := Cntxt.backend.SaveReservation(reservation)
+				savedReservation, status, err := Cntxt.Backend.SaveReservation(reservation)
 				if err != nil {
 					rest.Error(w, err.Error(), status)
 				} else {
@@ -149,7 +149,7 @@ func UpdateReservation(w rest.ResponseWriter, r *rest.Request) {
 
 // ShowReservationList displays a list of reservations
 func ShowReservationList(w rest.ResponseWriter, r *rest.Request) {
-	reservationList, status, err := Cntxt.backend.GetReservations()
+	reservationList, status, err := Cntxt.Backend.GetReservations()
 	if err != nil {
 		rest.Error(w, err.Error(), status)
 	} else {
@@ -159,7 +159,7 @@ func ShowReservationList(w rest.ResponseWriter, r *rest.Request) {
 
 // ShowReservation displays a reservation
 func ShowReservation(w rest.ResponseWriter, r *rest.Request) {
-	reservation, status, err := Cntxt.backend.GetReservation(r.PathParam("uuid"))
+	reservation, status, err := Cntxt.Backend.GetReservation(r.PathParam("uuid"))
 	if err != nil {
 		rest.Error(w, err.Error(), status)
 	} else {
@@ -189,7 +189,7 @@ func CreateUser(w rest.ResponseWriter, r *rest.Request) {
 			}
 
 			// Store in the blob service
-			savedUser, status, err := Cntxt.backend.SaveUser(user)
+			savedUser, status, err := Cntxt.Backend.SaveUser(user)
 			if err != nil {
 				rest.Error(w, err.Error(), status)
 			} else {
@@ -202,7 +202,7 @@ func CreateUser(w rest.ResponseWriter, r *rest.Request) {
 
 // ShowUserList displays a list of users
 func ShowUserList(w rest.ResponseWriter, r *rest.Request) {
-	userList, status, err := Cntxt.backend.GetUsers()
+	userList, status, err := Cntxt.Backend.GetUsers()
 	if err != nil {
 		rest.Error(w, err.Error(), status)
 	} else {
@@ -215,7 +215,7 @@ func DeleteUser(w rest.ResponseWriter, r *rest.Request) {
 	id := r.PathParam("uuid")
 
 	// Store in the blob service
-	status, err := Cntxt.backend.DeleteUser(id)
+	status, err := Cntxt.Backend.DeleteUser(id)
 	if err != nil {
 		rest.Error(w, err.Error(), status)
 	} else {

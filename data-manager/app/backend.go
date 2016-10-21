@@ -15,12 +15,6 @@ import (
 	"github.com/vmtrain/data-manager/models"
 )
 
-// Constants used to map the queries to tables and columns found in the
-// database schema
-const (
-	blobId = 04
-)
-
 // Backend is a struct used for storage by the API server. It has a single
 // field which is an interface for the storage medium to use via db or in memory
 // map as the one used for testing.
@@ -38,7 +32,7 @@ func NewBackend(ds Datastore) Backend {
 
 // GetServers is a function to look up data about multiple servers.
 func (b Backend) GetServers() (*models.ServerList, int, error) {
-	blob, err := b.datastore.Read(blobId)
+	content, err := b.datastore.Read()
 	if err != nil {
 		return nil,
 			http.StatusInternalServerError,
@@ -46,11 +40,11 @@ func (b Backend) GetServers() (*models.ServerList, int, error) {
 	}
 
 	serverList := []models.Server{}
-	blob.Content.Lock()
-	for _, server := range blob.Content.Servers {
+	content.Lock()
+	for _, server := range content.Servers {
 		serverList = append(serverList, server)
 	}
-	blob.Content.Unlock()
+	content.Unlock()
 	var servers models.ServerList = serverList
 
 	return &servers, http.StatusOK, nil
@@ -59,17 +53,17 @@ func (b Backend) GetServers() (*models.ServerList, int, error) {
 // SaveServer is a function to stored the data about a server.
 func (b Backend) SaveServer(server models.Server) (*models.Server, int, error) {
 	// Read data from the blob service
-	blob, err := b.datastore.Read(blobId)
+	content, err := b.datastore.Read()
 	if err != nil {
 		return nil, http.StatusInternalServerError, err
 	}
-	log.Printf("The blob found was %+v", blob)
+	log.Printf("The content found was %+v", content)
 
-	blob.Content.Lock()
-	blob.Content.Servers[server.UUID] = server
-	blob.Content.Unlock()
+	content.Lock()
+	content.Servers[server.UUID] = server
+	content.Unlock()
 
-	err = b.datastore.Write(blob)
+	err = b.datastore.Write(content)
 	if err != nil {
 		return nil, http.StatusInternalServerError, err
 	}
@@ -79,23 +73,23 @@ func (b Backend) SaveServer(server models.Server) (*models.Server, int, error) {
 // DeleteServer is a function to delete the data about a server.
 func (b Backend) DeleteServer(id string) (int, error) {
 	// Read data from the blob service
-	blob, err := b.datastore.Read(blobId)
+	content, err := b.datastore.Read()
 	if err != nil {
 		return http.StatusInternalServerError, err
 	}
-	log.Printf("The blob found was %+v\n", blob)
+	log.Printf("The content found was %+v\n", content)
 
-	blob.Content.Lock()
-	_, ok := blob.Content.Servers[id]
+	content.Lock()
+	_, ok := content.Servers[id]
 	if !ok {
-		blob.Content.Unlock()
+		content.Unlock()
 		return http.StatusNotFound, fmt.Errorf("Server %s was not found", id)
 	} else {
-		delete(blob.Content.Servers, id)
-		blob.Content.Unlock()
+		delete(content.Servers, id)
+		content.Unlock()
 	}
 
-	err = b.datastore.Write(blob)
+	err = b.datastore.Write(content)
 	if err != nil {
 		return http.StatusInternalServerError, err
 	}
@@ -104,7 +98,7 @@ func (b Backend) DeleteServer(id string) (int, error) {
 
 // GetReservations is a function to look up data about multiple servers.
 func (b Backend) GetReservations() (*models.ReservationList, int, error) {
-	blob, err := b.datastore.Read(blobId)
+	content, err := b.datastore.Read()
 	if err != nil {
 		return nil,
 			http.StatusInternalServerError,
@@ -112,11 +106,11 @@ func (b Backend) GetReservations() (*models.ReservationList, int, error) {
 	}
 
 	reservationList := []models.Reservation{}
-	blob.Content.Lock()
-	for _, reservation := range blob.Content.Reservations {
+	content.Lock()
+	for _, reservation := range content.Reservations {
 		reservationList = append(reservationList, reservation)
 	}
-	blob.Content.Unlock()
+	content.Unlock()
 	var reservations models.ReservationList = reservationList
 
 	return &reservations, http.StatusOK, nil
@@ -124,15 +118,15 @@ func (b Backend) GetReservations() (*models.ReservationList, int, error) {
 
 // GetReservation is a function to look up data about a single reservation.
 func (b Backend) GetReservation(id string) (*models.Reservation, int, error) {
-	blob, err := b.datastore.Read(blobId)
+	content, err := b.datastore.Read()
 	if err != nil {
 		return nil,
 			http.StatusInternalServerError,
 			fmt.Errorf("Failed to read blob data from service. Caused by: %v", err)
 	}
-	blob.Content.Lock()
-	res, ok := blob.Content.Reservations[id]
-	blob.Content.Unlock()
+	content.Lock()
+	res, ok := content.Reservations[id]
+	content.Unlock()
 	if !ok {
 		return nil,
 			http.StatusNotFound,
@@ -146,26 +140,26 @@ func (b Backend) GetReservation(id string) (*models.Reservation, int, error) {
 func (b Backend) SaveReservation(reservation models.Reservation) (*models.Reservation, int, error) {
 	var returnReservation *models.Reservation
 	// Read data from the blob service
-	blob, err := b.datastore.Read(blobId)
+	content, err := b.datastore.Read()
 	if err != nil {
 		return nil, http.StatusInternalServerError, err
 	}
-	log.Printf("The blob found was %+v", blob)
+	log.Printf("The content found was %+v", content)
 
 	// Update or create new reservation in the blob
-	blob.Content.Lock()
-	resFound, ok := blob.Content.Reservations[reservation.UUID]
+	content.Lock()
+	resFound, ok := content.Reservations[reservation.UUID]
 	if ok {
 		resFound.Update(reservation)
-		blob.Content.Reservations[reservation.UUID] = resFound
+		content.Reservations[reservation.UUID] = resFound
 		returnReservation = &resFound
 	} else {
-		blob.Content.Reservations[reservation.UUID] = reservation
+		content.Reservations[reservation.UUID] = reservation
 		returnReservation = &reservation
 	}
-	blob.Content.Unlock()
+	content.Unlock()
 
-	err = b.datastore.Write(blob)
+	err = b.datastore.Write(content)
 	if err != nil {
 		return nil, http.StatusInternalServerError, err
 	}
@@ -174,7 +168,7 @@ func (b Backend) SaveReservation(reservation models.Reservation) (*models.Reserv
 
 // GetUsers is a function to look up data about multiple users.
 func (b Backend) GetUsers() (*models.UserList, int, error) {
-	blob, err := b.datastore.Read(blobId)
+	content, err := b.datastore.Read()
 	if err != nil {
 		return nil,
 			http.StatusInternalServerError,
@@ -182,11 +176,11 @@ func (b Backend) GetUsers() (*models.UserList, int, error) {
 	}
 
 	userList := []models.User{}
-	blob.Content.Lock()
-	for _, user := range blob.Content.Users {
+	content.Lock()
+	for _, user := range content.Users {
 		userList = append(userList, user)
 	}
-	blob.Content.Unlock()
+	content.Unlock()
 	var users models.UserList = userList
 
 	return &users, http.StatusOK, nil
@@ -194,17 +188,17 @@ func (b Backend) GetUsers() (*models.UserList, int, error) {
 
 // SaveUser is a function to stored the data about a user.
 func (b Backend) SaveUser(user models.User) (*models.User, int, error) {
-	blob, err := b.datastore.Read(blobId)
+	content, err := b.datastore.Read()
 	if err != nil {
 		return nil, http.StatusInternalServerError, err
 	}
-	log.Printf("The blob found was %+v", blob)
+	log.Printf("The content found was %+v", content)
 
-	blob.Content.Lock()
-	blob.Content.Users[user.UUID] = user
-	blob.Content.Unlock()
+	content.Lock()
+	content.Users[user.UUID] = user
+	content.Unlock()
 
-	err = b.datastore.Write(blob)
+	err = b.datastore.Write(content)
 	if err != nil {
 		return nil, http.StatusInternalServerError, err
 	}
@@ -213,23 +207,23 @@ func (b Backend) SaveUser(user models.User) (*models.User, int, error) {
 
 // DeleteUser is a function to delete the data about a user.
 func (b Backend) DeleteUser(id string) (int, error) {
-	blob, err := b.datastore.Read(blobId)
+	content, err := b.datastore.Read()
 	if err != nil {
 		return http.StatusInternalServerError, err
 	}
-	log.Printf("The blob found was %+v", blob)
+	log.Printf("The content found was %+v", content)
 
-	blob.Content.Lock()
-	_, ok := blob.Content.Users[id]
+	content.Lock()
+	_, ok := content.Users[id]
 	if !ok {
-		blob.Content.Unlock()
+		content.Unlock()
 		return http.StatusNotFound, fmt.Errorf("User %s was not found", id)
 	} else {
-		delete(blob.Content.Users, id)
-		blob.Content.Unlock()
+		delete(content.Users, id)
+		content.Unlock()
 	}
 
-	err = b.datastore.Write(blob)
+	err = b.datastore.Write(content)
 	if err != nil {
 		return http.StatusInternalServerError, err
 	}

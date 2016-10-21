@@ -23,7 +23,6 @@ type Context struct {
 
 // New generates an AppContext struct
 func New() *Context {
-	// TODO Remove once we start integration with the blob service
 	bcknd := NewBackend(
 		NewMockDatastore(
 			map[int]*models.Blob{

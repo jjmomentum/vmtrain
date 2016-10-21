@@ -8,6 +8,7 @@
 package models
 
 import (
+	"encoding/base64"
 	"encoding/json"
 	"sync"
 )
@@ -36,4 +37,28 @@ func (c *Content) ToJSON() (string, error) {
 		return "", err
 	}
 	return string(blobJson), nil
+}
+
+// FromBase64 populates from base64 string data.
+func (c *Content) FromBase64(b64 string) error {
+	sDec, err := base64.StdEncoding.DecodeString(b64)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(sDec, c)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+// ToBase64 returns a base64 string of the struct.
+func (c *Content) ToBase64() (string, error) {
+	blobJson, err := json.Marshal(c)
+	if err != nil {
+		return "", err
+	}
+
+	return base64.StdEncoding.EncodeToString(blobJson), nil
 }
