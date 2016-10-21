@@ -1,7 +1,6 @@
-The NotificationService is a Java based service with a REST endpoint that allows
-for the send of email notifications.
+The NotificationService is a Java based service with a REST endpoint that allows for the sending of email notifications.
 
-To build, insteall gradle 2.2+ and run the following command from notfication root dir:
+To build, install gradle 2.2+ and run the following command from notfication root dir: 
 gradle build
 
 To run, execute the following command from nofication root dir:
