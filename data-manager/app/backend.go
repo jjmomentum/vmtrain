@@ -46,9 +46,11 @@ func (b Backend) GetServers() (*models.ServerList, int, error) {
 	}
 
 	serverList := []models.Server{}
+	blob.Content.Lock()
 	for _, server := range blob.Content.Servers {
 		serverList = append(serverList, server)
 	}
+	blob.Content.Unlock()
 	var servers models.ServerList = serverList
 
 	return &servers, http.StatusOK, nil
@@ -84,9 +86,11 @@ func (b Backend) GetReservations() (*models.ReservationList, int, error) {
 	}
 
 	reservationList := []models.Reservation{}
+	blob.Content.Lock()
 	for _, reservation := range blob.Content.Reservations {
 		reservationList = append(reservationList, reservation)
 	}
+	blob.Content.Unlock()
 	var reservations models.ReservationList = reservationList
 
 	return &reservations, http.StatusOK, nil
@@ -100,8 +104,9 @@ func (b Backend) GetReservation(id string) (*models.Reservation, int, error) {
 			http.StatusInternalServerError,
 			fmt.Errorf("Failed to read blob data from service. Caused by: %v", err)
 	}
-
+	blob.Content.Lock()
 	res, ok := blob.Content.Reservations[id]
+	blob.Content.Unlock()
 	if !ok {
 		return nil,
 			http.StatusNotFound,
@@ -151,9 +156,11 @@ func (b Backend) GetUsers() (*models.UserList, int, error) {
 	}
 
 	userList := []models.User{}
+	blob.Content.Lock()
 	for _, user := range blob.Content.Users {
 		userList = append(userList, user)
 	}
+	blob.Content.Unlock()
 	var users models.UserList = userList
 
 	return &users, http.StatusOK, nil
