@@ -19,7 +19,7 @@ angular
     'mwl.calendar',
     'ui.bootstrap'
   ])
-  .constant('ENDPOINT_URI', 'http://localhost:9292/api/1/')
+  .constant('ENDPOINT_URI', 'http://0.0.0.0:9292/api/1/')
   .config(function ($routeProvider) {
     $routeProvider
       .when('/', {
