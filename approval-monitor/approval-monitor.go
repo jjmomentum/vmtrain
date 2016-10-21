@@ -98,51 +98,52 @@ func realMain() int {
 
 	//	return exitcode
 
-	for {
-		var approvals models.ApprovalList
-		err := app.MakeRequest(getApprovalsURL, http.MethodGet, &approvals, nil)
-		if err != nil {
-			log.Println("Shutdown caused by:" + err.Error())
-			return 1
-		}
+	//	for {
+	var approvals models.ApprovalList
+	err := app.MakeRequest(getApprovalsURL, http.MethodGet, &approvals, nil)
+	if err != nil {
+		log.Println("Shutdown caused by:" + err.Error())
+		return 1
+	}
 
-		for _, approval := range approvals {
-			if approval.Approved {
-				var reservationResponse models.Reservation
-				reservationPayload := models.Reservation{}
-				// Unmarshal JSON
-				b, err := json.Marshal(reservationPayload)
-				if err != nil {
-					log.Println("Shutdown caused by:" + err.Error())
-					return 1
-				}
+	for _, approval := range approvals {
+		if approval.Approved {
+			var reservationResponse models.Reservation
+			reservationPayload := models.Reservation{}
+			// Unmarshal JSON
+			b, err := json.Marshal(reservationPayload)
+			if err != nil {
+				log.Println("Shutdown caused by:" + err.Error())
+				return 1
+			}
 
-				err = app.MakeRequest(
-					fmt.Sprintf("%s/%s", updateReservationURL, approval.Description),
-					http.MethodPut,
-					&reservationResponse,
-					bytes.NewReader(b),
-				)
-				if err != nil {
-					log.Println("Shutdown caused by:" + err.Error())
-					return 1
-				}
+			err = app.MakeRequest(
+				fmt.Sprintf("%s/%s", updateReservationURL, approval.Description),
+				http.MethodPut,
+				&reservationResponse,
+				bytes.NewReader(b),
+			)
+			if err != nil {
+				log.Println("Shutdown caused by:" + err.Error())
+				return 1
+			}
 
-				err = app.MakeRequest(
-					fmt.Sprintf("%s%s", deleteApprovalURL, approval.ID),
-					http.MethodDelete,
-					nil,
-					nil,
-				)
-				if err != nil {
-					log.Println("Shutdown caused by:" + err.Error())
-					return 1
-				}
+			err = app.MakeRequest(
+				fmt.Sprintf("%s%s", deleteApprovalURL, approval.ID),
+				http.MethodDelete,
+				nil,
+				nil,
+			)
+			if err != nil {
+				log.Println("Shutdown caused by:" + err.Error())
+				return 1
 			}
 		}
-
-		time.Sleep(time.Duration(uint(time.Second) * pollIntervalSec))
 	}
+	log.Printf("Sleeping for %d seconds\n", pollIntervalSec)
+	time.Sleep(time.Duration(uint(time.Second) * pollIntervalSec))
+	return 0
+	//	}
 }
 
 func main() {

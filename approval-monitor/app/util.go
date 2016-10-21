@@ -18,8 +18,16 @@ import (
 
 func MakeRequest(url, httpMethod string, response interface{}, payload *bytes.Reader) error {
 	client := &http.Client{}
+	var (
+		err     error
+		request *http.Request
+	)
 	// Make call to server
-	request, err := http.NewRequest(httpMethod, url, payload)
+	if payload != nil {
+		request, err = http.NewRequest(httpMethod, url, payload)
+	} else {
+		request, err = http.NewRequest(httpMethod, url, nil)
+	}
 	if err != nil {
 		return fmt.Errorf("Failed to generate request. Caused by: %+v", err)
 	}
@@ -41,14 +49,14 @@ func MakeRequest(url, httpMethod string, response interface{}, payload *bytes.Re
 		// to prevent malicious attacks on the server.
 		body, err := ioutil.ReadAll(io.LimitReader(resp.Body, 1048576))
 		if err != nil {
-			return fmt.Errorf("Failed to read the response body")
+			return fmt.Errorf("Failed to read the response body. Error: %v", err)
 		}
 		defer resp.Body.Close()
 
 		// Unmarshal JSON
 		err = json.Unmarshal(body, response)
 		if err != nil {
-			return fmt.Errorf("Failed to unmarshal the response body")
+			return fmt.Errorf("Failed to unmarshal the response body. Error: %v", err)
 		}
 	}
 

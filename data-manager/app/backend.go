@@ -92,8 +92,28 @@ func (b Backend) GetReservations() (*models.ReservationList, int, error) {
 	return &reservations, http.StatusOK, nil
 }
 
+// GetReservation is a function to look up data about a single reservation.
+func (b Backend) GetReservation(id string) (*models.Reservation, int, error) {
+	blob, err := b.datastore.Read(blobId)
+	if err != nil {
+		return nil,
+			http.StatusInternalServerError,
+			fmt.Errorf("Failed to read blob data from service. Caused by: %v", err)
+	}
+
+	res, ok := blob.Content.Reservations[id]
+	if !ok {
+		return nil,
+			http.StatusNotFound,
+			fmt.Errorf("Reservation with uuid: %s not found", id)
+	}
+
+	return &res, http.StatusOK, nil
+}
+
 // SaveReservation is a function to stored the data about a server.
 func (b Backend) SaveReservation(reservation models.Reservation) (*models.Reservation, int, error) {
+	var returnReservation *models.Reservation
 	// Read data from the blob service
 	blob, err := b.datastore.Read(blobId)
 	if err != nil {
@@ -101,15 +121,24 @@ func (b Backend) SaveReservation(reservation models.Reservation) (*models.Reserv
 	}
 	log.Printf("The blob found was %+v", blob)
 
+	// Update or create new reservation in the blob
 	blob.Content.Lock()
-	blob.Content.Reservations[reservation.UUID] = reservation
+	resFound, ok := blob.Content.Reservations[reservation.UUID]
+	if ok {
+		resFound.Update(reservation)
+		blob.Content.Reservations[reservation.UUID] = resFound
+		returnReservation = &resFound
+	} else {
+		blob.Content.Reservations[reservation.UUID] = reservation
+		returnReservation = &reservation
+	}
 	blob.Content.Unlock()
 
 	err = b.datastore.Write(blob)
 	if err != nil {
 		return nil, http.StatusInternalServerError, err
 	}
-	return &reservation, http.StatusOK, nil
+	return returnReservation, http.StatusOK, nil
 }
 
 // GetUsers is a function to look up data about multiple users.
