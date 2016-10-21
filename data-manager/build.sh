@@ -329,11 +329,6 @@ shift $((OPTIND-1))
 COMMAND=${1:-build}
 TARGET_OS=$2
 
-# Check version of Go Language
-if ! (go version 2> /dev/null | grep "go$GO_VERSION" > /dev/null) ; then
-	echo "Expecting Go Version $GO_VERSION.   Current version is: [$(go version)]"
-	exit 0
-fi
 # Make sure GOPATH environment variable is set
 if [ -z ${GOPATH+x} ]; then
 	echo "GOPATH is not set";
