@@ -8,7 +8,7 @@
  */
 
 angular.module('app')
-  .service('ServersModel', function ($http, ENDPOINT_URI) {
+  .service('ServersModel', function ($http, $route, ENDPOINT_URI) {
     var service = this,
     path = 'servers/';
 
@@ -29,14 +29,20 @@ angular.module('app')
     };
 
     service.create = function (server) {
-      return $http.post(getUrl(), server);
+      return $http.post(getUrl(), server).then(function successCallback(response) {
+        $route.reload();
+      });
     };
 
     service.update = function (serverId, server) {
-      return $http.put(getUrlForId(serverId), server);
+      return $http.put(getUrlForId(serverId), server).then(function successCallback(response) {
+        $route.reload();
+      });
     };
 
     service.destroy = function (serverId) {
-      return $http.delete(getUrlForId(serverId));
+      return $http.delete(getUrlForId(serverId)).then(function successCallback(response) {
+        $route.reload();
+      });
     };
 });

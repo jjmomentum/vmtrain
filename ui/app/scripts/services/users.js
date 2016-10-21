@@ -8,7 +8,7 @@
  */
 
 angular.module('app')
-  .service('UsersModel', function ($http, ENDPOINT_URI) {
+  .service('UsersModel', function ($http, $route, ENDPOINT_URI) {
     var service = this,
     path = 'users/';
 
@@ -29,14 +29,20 @@ angular.module('app')
     };
 
     service.create = function (user) {
-      return $http.post(getUrl(), user);
+      return $http.post(getUrl(), user).then(function successCallback(response) {
+        $route.reload();
+      });
     };
 
     service.update = function (userId, user) {
-      return $http.put(getUrlForId(userId), user);
+      return $http.put(getUrlForId(userId), user).then(function successCallback(response) {
+        $route.reload();
+      });
     };
 
     service.destroy = function (userId) {
-      return $http.delete(getUrlForId(userId));
+      return $http.delete(getUrlForId(userId)).then(function successCallback(response) {
+        $route.reload();
+      });
     };
 });

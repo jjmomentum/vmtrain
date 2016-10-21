@@ -22,7 +22,7 @@ angular.module('app')
         controllerAs: 'smCtrl',
         resolve: {
           server: function () {
-            return { "name": "" };
+            return { 'name': '' };
           }
         }
       });
