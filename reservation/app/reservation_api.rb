@@ -14,12 +14,12 @@ class ReservationApi < ApiBase
   post '/' do
     logger.info('POST /reservations')
     logger.debug('Creating reservation with lab data reservation...')
-    reservation = HTTParty.post('http://localhost:8080/api/topic/reservation_test',
+    reservation = HTTParty.post('http://localhost:8080/api/topic/reservation',
       :headers => {
         'Content-type' => 'application/json'
       },
       :body => {
-        'message': Base64.encode64(params.to_s)
+        'message': Base64.encode64(params.to_json)
       }.to_json
     )
     response = { 'reservation' => reservation }
