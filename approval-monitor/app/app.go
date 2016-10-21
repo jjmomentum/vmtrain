@@ -18,20 +18,14 @@ var Cntxt = New()
 // Initialize the flags processor with default values and help messages.
 func initFlags() {
 	const (
-		listenPortDefault  = 8080
-		listenPortUsage    = "port on which to listen for HTTP requests"
-		contentRootDefault = "."
-		contentRootUsage   = "path to (static content) templates, skeleton, etc."
-		apiHostDefault     = "localhost"
-		apiHostUsage       = "host to use for all API calls made internally."
+		dataManagerUsage               = "base URL endpoint for the data-manager microservice."
+		dataManagerDefault             = "http://localhost:6001"
+		approvalPollIntervalSecUsage   = "interval of time in between polls to the approvals service in seconds"
+		approvalPollIntervalSecDefault = 60
 	)
 
-	flag.IntVar(&Cntxt.ListenPort, "listenport", listenPortDefault, listenPortUsage)
-	flag.IntVar(&Cntxt.ListenPort, "l", listenPortDefault, listenPortUsage+" (shorthand)")
-	flag.StringVar(&Cntxt.APIHost, "apiHost", apiHostDefault, apiHostUsage)
-	flag.StringVar(&Cntxt.APIHost, "h", apiHostDefault, apiHostUsage+" (shorthand)")
-	flag.StringVar(&Cntxt.ContentRoot, "tplpath", contentRootDefault, contentRootUsage)
-	flag.StringVar(&Cntxt.ContentRoot, "t", contentRootDefault, contentRootUsage+" (shorthand)")
+	flag.StringVar(&Cntxt.DataManagerURL, "data-manager", dataManagerDefault, dataManagerUsage+" (shorthand)")
+	flag.IntVar(&Cntxt.ApprovalPollIntervalSec, "poll-interval", approvalPollIntervalSecDefault, approvalPollIntervalSecUsage+" (shorthand")
 }
 
 // Process application (command line) flags. Note this happens automatically.

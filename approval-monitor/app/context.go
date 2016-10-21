@@ -7,43 +7,13 @@
 //
 package app
 
-import (
-	"github.com/vmtrain/approval-monitor/models"
-	"github.com/vmtrain/approval-monitor/stats"
-)
-
 // Context is a struct to hold global application context variables.
 type Context struct {
-	ListenPort  int
-	ContentRoot string
-	APIHost     string
-	Stats       stats.Stats
-	backend     Backend
+	DataManagerURL          string
+	ApprovalPollIntervalSec int
 }
 
 // New generates an AppContext struct
 func New() *Context {
-	bcknd := NewBackend(
-		NewMockDatastore(
-			map[int]*models.Blob{
-				blobId: &models.Blob{
-					ID:   blobId,
-					Name: "Team 4 blob",
-					Content: models.Content{
-						Servers:      map[string]models.Server{},
-						Reservations: map[string]models.Reservation{},
-						Users:        map[string]models.User{},
-					},
-				},
-			},
-		),
-	)
-	ctx := &Context{
-		ListenPort:  80,
-		ContentRoot: ".",
-		APIHost:     "localhost",
-		Stats:       stats.New(),
-		backend:     bcknd,
-	}
-	return ctx
+	return &Context{}
 }

@@ -25,10 +25,9 @@ esac
 
 MS_NAME="approval-monitor"
 MS_PORT=6001
-PKG_LIST="models stats template app ."
+PKG_LIST="models app ."
 REPO_PATH="${GOPATH}/src/github.com/vmtrain"
 BUILD_IMAGE="docker.io/golang:1.6"
-GO_VERSION="1.6"
 VERBOSE=0
 VERBOSEFLAG=>/dev/null
 COVER_FILE=testcoverage.out
@@ -283,7 +282,7 @@ makeDocker() {
 }
 
 startService(){
-	docker run -d -p $MS_PORT:$MS_PORT $MS_NAME:$VERSION
+	docker run -d $MS_NAME:$VERSION
 	if [ $? -ne 0 ]; then 
         echo "error running $MS_NAME microservice"
         exit 1
@@ -324,11 +323,6 @@ shift $((OPTIND-1))
 COMMAND=${1:-build}
 TARGET_OS=$2
 
-# Check version of Go Language
-if ! (go version 2> /dev/null | grep "go$GO_VERSION" > /dev/null) ; then
-	echo "Expecting Go Version $GO_VERSION.   Current version is: [$(go version)]"
-	exit 0
-fi
 # Make sure GOPATH environment variable is set
 if [ -z ${GOPATH+x} ]; then
 	echo "GOPATH is not set";
