@@ -17,6 +17,7 @@ var Cntxt = New()
 
 // Initialize the flags processor with default values and help messages.
 func initFlags() {
+	testing := false
 	const (
 		listenPortDefault  = 8080
 		listenPortUsage    = "port on which to listen for HTTP requests"
@@ -24,6 +25,8 @@ func initFlags() {
 		contentRootUsage   = "path to (static content) templates, skeleton, etc."
 		apiHostDefault     = "localhost"
 		apiHostUsage       = "host to use for all API calls made internally."
+		testingUsage       = "Set to true to use the in memory data store else blob service is used"
+		testingDefault     = false
 	)
 
 	flag.IntVar(&Cntxt.ListenPort, "listenport", listenPortDefault, listenPortUsage)
@@ -32,6 +35,15 @@ func initFlags() {
 	flag.StringVar(&Cntxt.APIHost, "h", apiHostDefault, apiHostUsage+" (shorthand)")
 	flag.StringVar(&Cntxt.ContentRoot, "tplpath", contentRootDefault, contentRootUsage)
 	flag.StringVar(&Cntxt.ContentRoot, "t", contentRootDefault, contentRootUsage+" (shorthand)")
+	flag.BoolVar(&testing, "test", modeDefault, modeUsage+" (shorthand)")
+
+	if !testing {
+		Cntxt.backend = NewBackend(
+			NewBlobDatastore(
+				"http://blobs.vmwaredevops.appspot.com/api/v1.1/blobs",
+			),
+		)
+	}
 }
 
 // Process application (command line) flags. Note this happens automatically.
