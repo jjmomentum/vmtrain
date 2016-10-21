@@ -22,7 +22,7 @@ angular.module('app')
         controllerAs: 'umCtrl',
         resolve: {
           user: function () {
-            return { "name": "" };
+            return { 'name': '' };
           }
         }
       });

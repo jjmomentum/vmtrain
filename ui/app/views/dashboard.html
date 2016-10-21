@@ -1,33 +1,6 @@
 <div ng-controller="DashboardCtrl as vm">
-  <div class="row">
-    <div class="col-md-6">
-      <div class="btn-group">
-        <button
-          class="btn btn-primary"
-          mwl-date-modifier
-          date="vm.viewDate"
-          decrement="vm.calendarView">
-          Previous
-        </button>
-        <button
-          class="btn btn-default"
-          mwl-date-modifier
-          date="vm.viewDate"
-          set-to-today>
-          Today
-        </button>
-        <button
-          class="btn btn-primary"
-          mwl-date-modifier
-          date="vm.viewDate"
-          increment="vm.calendarView">
-          Next
-        </button>
-      </div>
-    </div>
-    <div class="col-md-6 text-center">
-      <h4>{{ vm.calendarTitle }}</h4>
-    </div>
+  <div class="row text-center">
+    <h4>{{ vm.calendarTitle }}</h4>
   </div>
 
   <mwl-calendar

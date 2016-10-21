@@ -8,7 +8,7 @@
  */
 
 angular.module('app')
-  .service('ReservationsModel', function ($http, ENDPOINT_URI) {
+  .service('ReservationsModel', function ($http, $route, ENDPOINT_URI) {
     var service = this,
     path = 'reservations/';
 
@@ -29,14 +29,20 @@ angular.module('app')
     };
 
     service.create = function (reservation) {
-      return $http.post(getUrl(), reservation);
+      return $http.post(getUrl(), reservation).then(function successCallback(response) {
+        $route.reload();
+      });
     };
 
     service.update = function (reservationId, reservation) {
-      return $http.put(getUrlForId(reservationId), reservation);
+      return $http.put(getUrlForId(reservationId), reservation).then(function successCallback(response) {
+        $route.reload();
+      });
     };
 
     service.destroy = function (reservationId) {
-      return $http.delete(getUrlForId(reservationId));
+      return $http.delete(getUrlForId(reservationId)).then(function successCallback(response) {
+        $route.reload();
+      });
     };
 });
