@@ -3,17 +3,22 @@ class ReservationApi < ApiBase
   get '/' do
     logger.info('GET /reservations')
     logger.debug('Querying lab data service for reservations...')
-    # Fetch reservations from lab data service
-    response = { 'reservations' => [] }
+    reservations = HTTParty.get('http://localhost:6001/api/reservations')
+    response = { 'reservations' => reservations }
     logger.debug("Successfully returning reservations - RETURN: #{OK}")
     [OK, response.to_json]
   end
 
   post '/' do
     logger.info('POST /reservations')
-    logger.debug('Creating user with lab data reservation...')
-    # POST reservation to lab data service
-    response = { 'reservation' => {} }
+    logger.debug('Creating reservation with lab data reservation...')
+    reservation = HTTParty.post('http://localhost:6001/api/reservations',
+      :headers => {
+        'Content-type' => 'application/json'
+      },
+      :body => params.to_json
+    )
+    response = { 'reservation' => reservation }
     logger.debug("Successfully returning new reservation - RETURN: #{OK}")
     [OK, response.to_json]
   end

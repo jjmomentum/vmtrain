@@ -4,7 +4,8 @@ class ServerApi < ApiBase
     logger.info('GET /servers')
     logger.debug('Querying lab data service for servers...')
     # Fetch servers from lab data service
-    response = { 'servers' => [] }
+    servers = HTTParty.get('http://localhost:6001/api/servers')
+    response = { 'servers' => servers }
     logger.debug("Successfully returning servers - RETURN: #{OK}")
     [OK, response.to_json]
   end
@@ -12,8 +13,14 @@ class ServerApi < ApiBase
   post '/' do
     logger.info('POST /servers')
     logger.debug('Creating server with lab data service...')
-    # POST server to lab data service
-    response = { 'server' => {} }
+    server = HTTParty.post('http://localhost:6001/api/servers',
+      :headers => {
+        'Content-type' => 'application/json'
+      },
+      :body => params.to_json
+    )
+
+    response = { 'server' => server }
     logger.debug("Successfully returning new server - RETURN: #{OK}")
     [OK, response.to_json]
   end
