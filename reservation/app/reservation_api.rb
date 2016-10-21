@@ -1,3 +1,5 @@
+require 'base64'
+
 # Reservation APIs
 class ReservationApi < ApiBase
   get '/' do
@@ -12,11 +14,13 @@ class ReservationApi < ApiBase
   post '/' do
     logger.info('POST /reservations')
     logger.debug('Creating reservation with lab data reservation...')
-    reservation = HTTParty.post('http://localhost:6001/api/reservations',
+    reservation = HTTParty.post('http://localhost:8080/api/topic/reservation_test',
       :headers => {
         'Content-type' => 'application/json'
       },
-      :body => params.to_json
+      :body => {
+        'message': Base64.encode64(params.to_s)
+      }.to_json
     )
     response = { 'reservation' => reservation }
     logger.debug("Successfully returning new reservation - RETURN: #{OK}")

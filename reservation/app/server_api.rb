@@ -3,9 +3,10 @@ class ServerApi < ApiBase
   get '/' do
     logger.info('GET /servers')
     logger.debug('Querying lab data service for servers...')
-    # Fetch servers from lab data service
+
     servers = HTTParty.get('http://localhost:6001/api/servers')
     response = { 'servers' => servers }
+
     logger.debug("Successfully returning servers - RETURN: #{OK}")
     [OK, response.to_json]
   end
@@ -46,7 +47,10 @@ class ServerApi < ApiBase
   delete '/:id' do
     logger.info("DELETE /servers/#{params[:id]}")
     logger.debug('Deleting server with lab data service...')
-    # DELETE server with lab data service
+
+    delete_message = HTTParty.delete("http://localhost:6001/api/servers/#{params[:id]}")
+    response = { 'message' => delete_message }
+
     logger.debug("Successfully deleted server '#{params[:id]}' - RETURN: #{OK}")
     [OK, response.to_json]
   end
