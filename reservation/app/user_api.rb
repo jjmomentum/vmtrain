@@ -3,8 +3,8 @@ class UserApi < ApiBase
   get '/' do
     logger.info('GET /users')
     logger.debug('Querying lab data service for users...')
-    # Fetch users from lab data service
-    response = { 'users' => [] }
+    users = HTTParty.get('http://localhost:6001/api/users')
+    response = { 'users' => users }
     logger.debug("Successfully returning users - RETURN: #{OK}")
     [OK, response.to_json]
   end
@@ -12,8 +12,13 @@ class UserApi < ApiBase
   post '/' do
     logger.info('POST /users')
     logger.debug('Creating user with lab data service...')
-    # POST user to lab data service
-    response = { 'user' => {} }
+    user = HTTParty.post('http://localhost:6001/api/users',
+      :headers => {
+        'Content-type' => 'application/json'
+      },
+      :body => params.to_json
+    )
+    response = { 'user' => user }
     logger.debug("Successfully returning new user - RETURN: #{OK}")
     [OK, response.to_json]
   end
