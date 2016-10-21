@@ -41,6 +41,17 @@ func statsHitsHandler(w http.ResponseWriter, r *http.Request) {
 // Called by main, which is just a wrapper for this function. The reason
 // is main can't directly pass back a return code to the OS.
 func realMain() int {
+
+	// If not in testing mode we initialize the microservice backend to use the blob.
+	// else we use the in memory mock data store
+	if !app.Testing {
+		app.Cntxt.Backend = app.NewBackend(
+			app.NewBlobDatastore(
+				"http://blobs.vmwaredevops.appspot.com/api/v1.1/blobs",
+			),
+		)
+	}
+
 	// setup JSON request handlers
 	api := rest.NewApi()
 	api.Use(rest.DefaultDevStack...)

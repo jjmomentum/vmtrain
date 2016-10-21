@@ -18,7 +18,7 @@ type Context struct {
 	ContentRoot string
 	APIHost     string
 	Stats       stats.Stats
-	backend     Backend
+	Backend     Backend
 }
 
 // New generates an AppContext struct
@@ -49,7 +49,7 @@ func New() *Context {
 		ContentRoot: ".",
 		APIHost:     "localhost",
 		Stats:       stats.New(),
-		backend:     bcknd,
+		Backend:     bcknd,
 	}
 	return ctx
 }

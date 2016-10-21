@@ -13,11 +13,14 @@ import (
 )
 
 // Cntxt is ues to initialize the state of the service including default ports and host ip
-var Cntxt = New()
+var (
+	Cntxt   = New()
+	Testing = false
+)
 
 // Initialize the flags processor with default values and help messages.
 func initFlags() {
-	testing := false
+
 	const (
 		listenPortDefault  = 8080
 		listenPortUsage    = "port on which to listen for HTTP requests"
@@ -35,15 +38,7 @@ func initFlags() {
 	flag.StringVar(&Cntxt.APIHost, "h", apiHostDefault, apiHostUsage+" (shorthand)")
 	flag.StringVar(&Cntxt.ContentRoot, "tplpath", contentRootDefault, contentRootUsage)
 	flag.StringVar(&Cntxt.ContentRoot, "t", contentRootDefault, contentRootUsage+" (shorthand)")
-	flag.BoolVar(&testing, "test", testingDefault, testingUsage+" (shorthand)")
-
-	if !testing {
-		Cntxt.backend = NewBackend(
-			NewBlobDatastore(
-				"http://blobs.vmwaredevops.appspot.com/api/v1.1/blobs",
-			),
-		)
-	}
+	flag.BoolVar(&Testing, "test", testingDefault, testingUsage+" (shorthand)")
 }
 
 // Process application (command line) flags. Note this happens automatically.
