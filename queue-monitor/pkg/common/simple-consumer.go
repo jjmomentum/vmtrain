@@ -2,6 +2,7 @@ package common
 
 import (
 	//"encoding/base64"
+	"bytes"
 	"fmt"
 	"io/ioutil"
 	"log"
@@ -16,10 +17,28 @@ type SimpleConsumer struct {
 }
 
 func (sc *SimpleConsumer) saveReservation(msg *Message) {
-
-	fmt.Printf("Sending reservation %s to data-manager at %s\n", msg.ToJson(), sc.DataManager)
+	url := fmt.Sprintf("%s/api/reservations", sc.DataManager)
+	fmt.Printf("Sending reservation %s to data-manager at %s\n", msg.ToJson(), url)
 	payload := string(msg.Base64[:])
 	fmt.Printf("payload: %s\n", payload)
+	//var jsonStr = []byte(`{"title":"Buy cheese and bread for breakfast."}`)
+	var jsonStr = []byte(payload)
+
+	req, err := http.NewRequest("POST", url, bytes.NewBuffer(jsonStr))
+	req.Header.Set("X-Custom-Header", "myvalue")
+	req.Header.Set("Content-Type", "application/json")
+
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		panic(err)
+	}
+	defer resp.Body.Close()
+
+	fmt.Println("response Status:", resp.Status)
+	fmt.Println("response Headers:", resp.Header)
+	body, _ := ioutil.ReadAll(resp.Body)
+	fmt.Println("response Body:", string(body))
 
 }
 
@@ -94,8 +113,8 @@ func (sc *SimpleConsumer) ConsumeMessages(url string, topic string) error {
 	}
 
 	for {
-		time.Sleep(time.Second * 15)
 		listen <- true
+		time.Sleep(time.Second * 15)
 	}
 
 	listen <- false
