@@ -27,4 +27,8 @@ angular.module('app')
         }
       });
     };
+
+    vm.deleteUser = function(userId) {
+      UsersModel.destroy(userId);
+    };
   });

@@ -27,7 +27,7 @@ angular.module('app')
         date.setDate(date.getDate() + 1);
       }
       return days;
-    };
+    }
 
     ServersModel.all().then(function (result) {
       vm.servers = result.data.servers;
