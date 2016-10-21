@@ -55,8 +55,10 @@ func realMain() int {
 		rest.Put("/api/reservations/:uuid", app.UpdateReservation),
 		rest.Post("/api/servers", app.CreateServer),
 		rest.Get("/api/servers", app.ShowServerList),
+		rest.Delete("/api/servers/:uuid", app.DeleteServer),
 		rest.Post("/api/users", app.CreateUser),
 		rest.Get("/api/users", app.ShowUserList),
+		rest.Delete("/api/users/:uuid", app.DeleteUser),
 	)
 	if err != nil {
 		log.Fatal(err)

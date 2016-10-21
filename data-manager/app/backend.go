@@ -76,6 +76,32 @@ func (b Backend) SaveServer(server models.Server) (*models.Server, int, error) {
 	return &server, http.StatusOK, nil
 }
 
+// DeleteServer is a function to delete the data about a server.
+func (b Backend) DeleteServer(id string) (int, error) {
+	// Read data from the blob service
+	blob, err := b.datastore.Read(blobId)
+	if err != nil {
+		return http.StatusInternalServerError, err
+	}
+	log.Printf("The blob found was %+v\n", blob)
+
+	blob.Content.Lock()
+	_, ok := blob.Content.Servers[id]
+	if !ok {
+		blob.Content.Unlock()
+		return http.StatusNotFound, fmt.Errorf("Server %s was not found", id)
+	} else {
+		delete(blob.Content.Servers, id)
+		blob.Content.Unlock()
+	}
+
+	err = b.datastore.Write(blob)
+	if err != nil {
+		return http.StatusInternalServerError, err
+	}
+	return http.StatusOK, nil
+}
+
 // GetReservations is a function to look up data about multiple servers.
 func (b Backend) GetReservations() (*models.ReservationList, int, error) {
 	blob, err := b.datastore.Read(blobId)
@@ -183,4 +209,29 @@ func (b Backend) SaveUser(user models.User) (*models.User, int, error) {
 		return nil, http.StatusInternalServerError, err
 	}
 	return &user, http.StatusOK, nil
+}
+
+// DeleteUser is a function to delete the data about a user.
+func (b Backend) DeleteUser(id string) (int, error) {
+	blob, err := b.datastore.Read(blobId)
+	if err != nil {
+		return http.StatusInternalServerError, err
+	}
+	log.Printf("The blob found was %+v", blob)
+
+	blob.Content.Lock()
+	_, ok := blob.Content.Users[id]
+	if !ok {
+		blob.Content.Unlock()
+		return http.StatusNotFound, fmt.Errorf("User %s was not found", id)
+	} else {
+		delete(blob.Content.Users, id)
+		blob.Content.Unlock()
+	}
+
+	err = b.datastore.Write(blob)
+	if err != nil {
+		return http.StatusInternalServerError, err
+	}
+	return http.StatusOK, nil
 }

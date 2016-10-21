@@ -9,6 +9,7 @@ package app
 
 import (
 	"encoding/json"
+	"fmt"
 	"io"
 	"io/ioutil"
 	"log"
@@ -60,6 +61,20 @@ func ShowServerList(w rest.ResponseWriter, r *rest.Request) {
 	} else {
 		w.WriteJson(serverList)
 	}
+}
+
+// DeleteServer deletes a server
+func DeleteServer(w rest.ResponseWriter, r *rest.Request) {
+	id := r.PathParam("uuid")
+
+	// Store in the blob service
+	status, err := Cntxt.backend.DeleteServer(id)
+	if err != nil {
+		rest.Error(w, err.Error(), status)
+	} else {
+		w.WriteJson(map[string]string{"message": fmt.Sprintf("Server %s deleted", id)})
+	}
+
 }
 
 // CreateReservation creates a reservation
@@ -193,4 +208,18 @@ func ShowUserList(w rest.ResponseWriter, r *rest.Request) {
 	} else {
 		w.WriteJson(userList)
 	}
+}
+
+// DeleteUser deletes a user
+func DeleteUser(w rest.ResponseWriter, r *rest.Request) {
+	id := r.PathParam("uuid")
+
+	// Store in the blob service
+	status, err := Cntxt.backend.DeleteUser(id)
+	if err != nil {
+		rest.Error(w, err.Error(), status)
+	} else {
+		w.WriteJson(map[string]string{"message": fmt.Sprintf("User %s deleted", id)})
+	}
+
 }
