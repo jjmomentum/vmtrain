@@ -26,7 +26,11 @@ func NewBlobDatastore(url string) BlobDatastore {
 func (m BlobDatastore) Read() (models.Content, error) {
 	var (
 		blob    models.Blob
-		content models.Content
+		content = models.Content{
+			Servers:      map[string]models.Server{},
+			Reservations: map[string]models.Reservation{},
+			Users:        map[string]models.User{},
+		}
 	)
 	err := MakeRequest(
 		fmt.Sprintf("%s/%d", m.blobServiceURL, blobId),
@@ -38,9 +42,11 @@ func (m BlobDatastore) Read() (models.Content, error) {
 		return content, err
 	}
 
-	err = content.FromJSON([]byte(blob.Content))
-	if err != nil {
-		return content, err
+	if blob.Content != "" {
+		err = content.FromBase64(blob.Content)
+		if err != nil {
+			return content, err
+		}
 	}
 	return content, nil
 }
@@ -64,7 +70,7 @@ func (m BlobDatastore) Write(c models.Content) error {
 	}
 
 	// Prepare the content for the blob payload
-	contentString, err := c.ToJSON()
+	contentString, err := c.ToBase64()
 	if err != nil {
 		return err
 	}

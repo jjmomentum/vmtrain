@@ -13,6 +13,7 @@ import (
 	"fmt"
 	"io"
 	"io/ioutil"
+	"log"
 	"net/http"
 )
 
@@ -31,6 +32,7 @@ func MakeRequest(url, httpMethod string, response interface{}, payload *bytes.Re
 	if err != nil {
 		return fmt.Errorf("Failed to generate request. Caused by: %+v", err)
 	}
+	log.Printf("Making %s call to url %s", httpMethod, url)
 	resp, err := client.Do(request)
 	if err != nil {
 		return fmt.Errorf("Error generated when performing %s on %s. Caused by: %+v", httpMethod, url, err)

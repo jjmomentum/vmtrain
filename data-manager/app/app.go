@@ -35,7 +35,7 @@ func initFlags() {
 	flag.StringVar(&Cntxt.APIHost, "h", apiHostDefault, apiHostUsage+" (shorthand)")
 	flag.StringVar(&Cntxt.ContentRoot, "tplpath", contentRootDefault, contentRootUsage)
 	flag.StringVar(&Cntxt.ContentRoot, "t", contentRootDefault, contentRootUsage+" (shorthand)")
-	flag.BoolVar(&testing, "test", modeDefault, modeUsage+" (shorthand)")
+	flag.BoolVar(&testing, "test", testingDefault, testingUsage+" (shorthand)")
 
 	if !testing {
 		Cntxt.backend = NewBackend(
