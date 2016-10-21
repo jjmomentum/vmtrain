@@ -5,6 +5,8 @@ The NotificationService is a Java based service with a REST endpoint that allows
 
 Building 
 --------
+Requires JDK 1.7 or greater. 
+
 To build, install gradle 2.2+ and run the following command from notfication root dir: 
 ```
 gradle build
