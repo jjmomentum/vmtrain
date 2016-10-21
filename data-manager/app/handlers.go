@@ -9,6 +9,7 @@ package app
 
 import (
 	"encoding/json"
+	"fmt"
 	"io"
 	"io/ioutil"
 	"log"
@@ -62,6 +63,20 @@ func ShowServerList(w rest.ResponseWriter, r *rest.Request) {
 	}
 }
 
+// DeleteServer deletes a server
+func DeleteServer(w rest.ResponseWriter, r *rest.Request) {
+	id := r.PathParam("uuid")
+
+	// Store in the blob service
+	status, err := Cntxt.backend.DeleteServer(id)
+	if err != nil {
+		rest.Error(w, err.Error(), status)
+	} else {
+		w.WriteJson(map[string]string{"message": fmt.Sprintf("Server %s deleted", id)})
+	}
+
+}
+
 // CreateReservation creates a reservation
 func CreateReservation(w rest.ResponseWriter, r *rest.Request) {
 	var reservation models.Reservation
@@ -95,6 +110,43 @@ func CreateReservation(w rest.ResponseWriter, r *rest.Request) {
 	}
 }
 
+// UpdateReservation creates a reservation
+func UpdateReservation(w rest.ResponseWriter, r *rest.Request) {
+	id := r.PathParam("uuid")
+	_, status, err := Cntxt.backend.GetReservation(id)
+	if err != nil {
+		rest.Error(w, err.Error(), status)
+	} else {
+		var reservation models.Reservation
+		// Read and validate the request. The read on the request body is limited
+		// to prevent malicious attacks on the server.
+		body, err := ioutil.ReadAll(io.LimitReader(r.Body, 1048576))
+		if err != nil {
+			rest.Error(w, err.Error(), http.StatusBadRequest)
+		} else {
+			defer r.Body.Close()
+			log.Printf("The body received is %s", string(body))
+
+			// Unmarshal and validate JSON
+			err = json.Unmarshal(body, &reservation)
+			if err != nil {
+				rest.Error(w, err.Error(), http.StatusBadRequest)
+			} else {
+				// Override value to ensure data integrity
+				reservation.UUID = id
+				// Store in the blob service
+				savedReservation, status, err := Cntxt.backend.SaveReservation(reservation)
+				if err != nil {
+					rest.Error(w, err.Error(), status)
+				} else {
+					w.WriteJson(savedReservation)
+				}
+
+			}
+		}
+	}
+}
+
 // ShowReservationList displays a list of reservations
 func ShowReservationList(w rest.ResponseWriter, r *rest.Request) {
 	reservationList, status, err := Cntxt.backend.GetReservations()
@@ -102,6 +154,16 @@ func ShowReservationList(w rest.ResponseWriter, r *rest.Request) {
 		rest.Error(w, err.Error(), status)
 	} else {
 		w.WriteJson(reservationList)
+	}
+}
+
+// ShowReservation displays a reservation
+func ShowReservation(w rest.ResponseWriter, r *rest.Request) {
+	reservation, status, err := Cntxt.backend.GetReservation(r.PathParam("uuid"))
+	if err != nil {
+		rest.Error(w, err.Error(), status)
+	} else {
+		w.WriteJson(reservation)
 	}
 }
 
@@ -146,4 +208,18 @@ func ShowUserList(w rest.ResponseWriter, r *rest.Request) {
 	} else {
 		w.WriteJson(userList)
 	}
+}
+
+// DeleteUser deletes a user
+func DeleteUser(w rest.ResponseWriter, r *rest.Request) {
+	id := r.PathParam("uuid")
+
+	// Store in the blob service
+	status, err := Cntxt.backend.DeleteUser(id)
+	if err != nil {
+		rest.Error(w, err.Error(), status)
+	} else {
+		w.WriteJson(map[string]string{"message": fmt.Sprintf("User %s deleted", id)})
+	}
+
 }

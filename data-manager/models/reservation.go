@@ -9,6 +9,7 @@ package models
 
 import (
 	"encoding/json"
+	"log"
 )
 
 // Reservation is the struct to hold reservation data about the lab environment
@@ -41,6 +42,28 @@ func (r *Reservation) ToJSON() (string, error) {
 		return "", err
 	}
 	return string(b), nil
+}
+
+// Update changes the fields in current model to the ones of the model passed in.
+func (r *Reservation) Update(res Reservation) {
+	log.Printf("Updating reservation %+v with %+v", r, res)
+	if res.EndDate != "" {
+		r.EndDate = res.EndDate
+	}
+
+	if res.Name != "" {
+		r.Name = res.Name
+	}
+
+	if res.ServerName != "" {
+		r.ServerName = res.ServerName
+	}
+
+	if res.StartDate != "" {
+		r.StartDate = res.StartDate
+	}
+
+	r.Approved = res.Approved
 }
 
 // ReservationList is a list of Reservation structs

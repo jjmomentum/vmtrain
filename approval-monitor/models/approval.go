@@ -13,11 +13,11 @@ import (
 
 // Approval is the struct to hold approval data about the lab environment
 type Approval struct {
-	ID string `json:"id"`
+	ID int `json:"id"`
 
-	TeamID string `json:"teamID"`
+	TeamID int `json:"teamID"`
 
-	Blob string `json:"blob"`
+	Blob int `json:"blob"`
 
 	Description string `json:"description"`
 
